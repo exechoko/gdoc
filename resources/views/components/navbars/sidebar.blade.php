@@ -31,7 +31,7 @@
                 <a class="nav-link text-white {{ $activePage == 'roles' ? 'active bg-gradient-primary' : '' }} "
                     href="{{ route('roles.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i style="font-size: 1.2rem;" class="fas fa-user-circle ps-2 pe-2 text-center"></i>
+                        <i style="font-size: 1.2rem;" class="fas fa-user-tag ps-2 pe-2 text-center"></i>
                     </div>
                     <span class="nav-link-text ms-1">Roles</span>
                 </a>

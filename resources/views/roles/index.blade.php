@@ -8,21 +8,29 @@
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card">
+                    <div class="card my-4">
+                        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                <h6 class="text-white mx-3"><strong> Agregar, Editar y Eliminar roles</strong></h6>
+                            </div>
+                        </div>
+                        <div class=" me-3 my-3 text-end">
+                            <a class="btn bg-gradient-success mb-0" href="{{ route('roles.create') }}"><i
+                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Agregar rol</a>
+                        </div>
                         <div class="card-body">
                             <div class="">
-                                @can('crear-rol')
-                                    <a class="btn btn-success" href="{{ route('roles.create') }}">Nuevo</a>
-                                @endcan
-                                <label class="alert alert-dark mb-0" style="float: right;">Registros:
+                                <label class="alert alert-white mb-0" style="float: right;">Registros:
                                     {{ $roles->total() }}</label>
                             </div>
 
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th style="color:#000000ed;">Rol</th>
-                                        <th style="color:#000000;">Acciones</th>
+                                        <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7"
+                                            style="color:#000000ed;">Rol</th>
+                                        <th class="text-uppercase text-secondary text-s font-weight-bolder opacity-7"
+                                            style="color:#000000;">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -31,8 +39,8 @@
                                             <td>{{ $role->name }}</td>
                                             <td>
                                                 @can('editar-rol')
-                                                    <a class="btn btn-primary"
-                                                        href="{{ route('roles.edit', $role->id) }}">Editar</a>
+                                                    <a class="btn btn-info" href="{{ route('roles.edit', $role->id) }}"><i
+                                                            class="material-icons">edit</i></a>
                                                 @endcan
 
                                                 @can('borrar-rol')
@@ -40,7 +48,8 @@
                                                         style="display:inline">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" class="btn btn-danger">Borrar</button>
+                                                        <button type="submit" class="btn btn-danger"><i
+                                                                class="material-icons">close</i></button>
                                                     </form>
                                                 @endcan
                                             </td>
