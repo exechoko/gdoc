@@ -22,7 +22,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\SessionsController;
-
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect('sign-in');
@@ -47,6 +47,7 @@ Route::post('user-profile', [ProfileController::class, 'update'])->middleware('a
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RolController::class);
+    Route::resource('usuarios', UserController::class);
     Route::get('billing', function () {
         return view('pages.billing');
     })->name('billing');
