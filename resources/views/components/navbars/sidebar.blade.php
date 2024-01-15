@@ -45,6 +45,7 @@
                     <span class="nav-link-text ms-1">Roles</span>
                 </a>
             </li>
+            @can('ver-usuario')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'usuarios' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('usuarios.index') }}">
@@ -54,6 +55,7 @@
                     <span class="nav-link-text ms-1">Adm. de usuarios</span>
                 </a>
             </li>
+            @endcan
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pages</h6>
             </li>
