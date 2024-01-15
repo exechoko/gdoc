@@ -14,7 +14,7 @@
                             </div>
                         </div>
                         <div class=" me-3 my-3 text-end">
-                            <a class="btn bg-gradient-success mb-0" href="javascript:;"><i
+                            <a class="btn bg-gradient-success mb-0" href="{{ route('usuarios.create') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Nuevo</a>
                         </div>
                         <div class="card-body px-0 pb-2">

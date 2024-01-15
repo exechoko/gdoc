@@ -24,7 +24,6 @@ class SessionsController extends Controller
             'password' => 'required'
         ]);
 
-        //dd($attributes);
 
         if (! auth()->attempt($attributes)) {
             throw ValidationException::withMessages([

@@ -44,14 +44,14 @@ class SuperAdminSeeder extends Seeder
             $admin = User::create([
                 'name' => 'Admin',
                 'email' => 'admin@gdoc.com',
-                'password' => Hash::make('123456')
+                'password' => 123456
             ]);
         }
         if (!$standardUser) {
             $standardUser = User::create([
                 'name' => 'Standard',
                 'email' => 'standard@gdoc.com',
-                'password' => Hash::make('123456')
+                'password' => 123456
             ]);
         }
 

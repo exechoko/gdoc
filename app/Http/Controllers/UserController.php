@@ -30,8 +30,8 @@ class UserController extends Controller
     public function create()
     {
         //aqui trabajamos con name de las tablas de users
-        $roles = Role::pluck('name','name')->all();
-        return view('usuarios.crear',compact('roles'));
+        $roles = Role::pluck('name', 'name')->all();
+        return view('usuarios.crear', compact('roles'));
     }
 
     /**
@@ -39,24 +39,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
+        //dd($request->all());
+        $attributes = request()->validate([
+            'name' => 'required|max:255',
             //'dni' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'password' => 'required|min:5|max:255|same:confirm-password',
+            'roles' => 'required|array'
         ]);
 
-        //Para no guardar el mismo usuario 2 veces
-        /*$u = User::where('lp', $request->lp)->first();
-        if (!is_null($u)){
-            return back()->with('error', 'Ya se encuentra un usuario con el mismo LP');//->withInput();
-        }*/
-
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-
-        $user = User::create($input);
+        $user = User::create($attributes);
         $user->assignRole($request->input('roles'));
 
         return redirect()->route('usuarios.index');
@@ -76,12 +68,12 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::find($id);
-        $roles = Role::pluck('name','name')->all();
+        $roles = Role::pluck('name', 'name')->all();
         $userRoles = $user->roles->pluck('name', 'id')->all(); // Obtener pares 'id' => 'nombre' de los roles del usuario
 
         //dd($userRoles);
 
-        return view('usuarios.editar',compact('user','roles', 'userRoles'));
+        return view('usuarios.editar', compact('user', 'roles', 'userRoles'));
     }
 
     /**
@@ -92,21 +84,21 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required',
             //'dni' => 'required',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'same:confirm-password',
             'roles' => 'required'
         ]);
 
         $input = $request->all();
-        if(!empty($input['password'])){
+        if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
-        }else{
-            $input = Arr::except($input,array('password'));
+        } else {
+            $input = Arr::except($input, array('password'));
         }
 
         $user = User::find($id);
         $user->update($input);
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
+        DB::table('model_has_roles')->where('model_id', $id)->delete();
 
         $user->assignRole($request->input('roles'));
 
