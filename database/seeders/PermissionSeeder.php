@@ -22,12 +22,35 @@ class PermissionSeeder extends Seeder
             'ver-usuario',
             'crear-usuario',
             'editar-usuario',
-            'borrar-usuario'
+            'borrar-usuario',
+
+            'ver-tipo-escuela',
+            'crear-tipo-escuela',
+            'editar-tipo-escuela',
+            'borrar-tipo-escuela',
+
+            'ver-escuela',
+            'crear-escuela',
+            'editar-escuela',
+            'borrar-escuela',
+
+            'ver-curso',
+            'crear-curso',
+            'editar-curso',
+            'borrar-curso',
+
+            'ver-alumno',
+            'crear-alumno',
+            'editar-alumno',
+            'borrar-alumno'
         ];
 
         // Looping and Inserting Array's Permissions into Permission Table
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            // Verificar si el permiso ya existe antes de crearlo
+            if (!Permission::where('name', $permission)->exists()) {
+                Permission::create(['name' => $permission]);
+            }
         }
     }
 }
