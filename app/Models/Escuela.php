@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Escuela extends Model
 {
@@ -21,14 +23,17 @@ class Escuela extends Model
         'telefono'
     ];
 
-    public function tipoEscuela(){
-        return $this->belongsTo(TipoEscuela::class);
+    public function tipoEscuela()
+    {
+        return $this->belongsTo(TipoEscuela::class, 'tipo_escuelas_id');
     }
 
-    public function curso(){
+    public function cursos()
+    {
         return $this->hasMany(Curso::class);
     }
-    public function alumno(){
+    public function alumnos()
+    {
         return $this->hasMany(Alumno::class);
     }
 }
