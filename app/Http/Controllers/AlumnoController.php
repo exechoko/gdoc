@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Curso;
+use App\Models\Escuela;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class AlumnoController extends Controller
@@ -36,11 +39,11 @@ class AlumnoController extends Controller
                 // Obtén los alumnos que pertenecen a los cursos del usuario con relaciones cargadas
                 $alumnos = Alumno::with('escuela', 'curso')->whereIn('curso_id', $idsCursos)->get();
             } /* else {
-                // Si el usuario no tiene el rol de "docente", manejar según tus necesidades
-                // Puede ser redirigir, mostrar un mensaje, etc.
-                // Por ejemplo, podrías obtener todos los alumnos nuevamente
-                $alumnos = Alumno::all();
-            }*/
+            // Si el usuario no tiene el rol de "docente", manejar según tus necesidades
+            // Puede ser redirigir, mostrar un mensaje, etc.
+            // Por ejemplo, podrías obtener todos los alumnos nuevamente
+            $alumnos = Alumno::all();
+        }*/
         }
 
         return view('alumnos.index', compact('alumnos'));
@@ -51,7 +54,15 @@ class AlumnoController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+        $escuelas = Escuela::all();
+        $cursos = null;
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            $cursos = Curso::all();
+        } else {
+            $cursos = $user->cursos->get();
+        }
+        return view('alumnos.crear', compact('escuelas', 'cursos'));
     }
 
     /**
@@ -59,7 +70,36 @@ class AlumnoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'dni' => 'required|unique:alumnos,dni',
+                'email' => 'required|email|unique:alumnos,email',
+            ]);
+
+            DB::beginTransaction();
+            // Crea el alumno y guarda directamente
+            Alumno::create([
+                'apellido' => $request->input('apellido'),
+                'nombre' => $request->input('nombre'),
+                'dni' => $request->input('dni'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'email' => $request->input('email'),
+                'telefono' => $request->input('telefono'),
+                'direccion' => $request->input('direccion'),
+                'ciudad' => $request->input('ciudad'),
+                'provincia' => $request->input('provincia'),
+                'pais' => $request->input('pais'),
+                'escuelas_id' => $request->input('escuela_id'),
+                'cursos_id' => $request->input('curso_id'),
+                'observaciones' => $request->input('observaciones'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('alumnos.index')->with('success', 'Alumno creado exitosamente');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al crear el alumno: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -75,7 +115,16 @@ class AlumnoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = Auth::user();
+        $alumno = Alumno::find($id);
+        $escuelas = Escuela::all();
+        $cursos = null;
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            $cursos = Curso::all();
+        } else {
+            $cursos = $user->cursos->get();
+        }
+        return view('alumnos.editar', compact('alumno', 'escuelas', 'cursos'));
     }
 
     /**
@@ -83,7 +132,40 @@ class AlumnoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'dni' => 'required|unique:alumnos,dni,' . $id,
+                'email' => 'required|email|unique:alumnos,email,' . $id,
+            ]);
+
+            DB::beginTransaction();
+
+            // Encuentra el alumno a actualizar
+            $alumno = Alumno::findOrFail($id);
+
+            // Actualiza los campos
+            $alumno->update([
+                'apellido' => $request->input('apellido'),
+                'nombre' => $request->input('nombre'),
+                'dni' => $request->input('dni'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'email' => $request->input('email'),
+                'telefono' => $request->input('telefono'),
+                'direccion' => $request->input('direccion'),
+                'ciudad' => $request->input('ciudad'),
+                'provincia' => $request->input('provincia'),
+                'pais' => $request->input('pais'),
+                'escuelas_id' => $request->input('escuela_id'),
+                'cursos_id' => $request->input('curso_id'),
+                'observaciones' => $request->input('observaciones'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('alumnos.index')->with('success', 'Alumno actualizado exitosamente');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al actualizar el alumno: ' . $e->getMessage());
+        }
     }
 
     /**

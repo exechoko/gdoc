@@ -17,6 +17,7 @@ class Alumno extends Model
         'nombre',
         'apellido',
         'dni',
+        'fecha_nacimiento',
         'email',
         'direccion',
         'ciudad',
