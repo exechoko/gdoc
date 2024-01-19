@@ -42,7 +42,17 @@ class PermissionSeeder extends Seeder
             'ver-alumno',
             'crear-alumno',
             'editar-alumno',
-            'borrar-alumno'
+            'borrar-alumno',
+
+            'ver-calificacion',
+            'crear-calificacion',
+            'editar-calificacion',
+            'borrar-calificacion',
+
+            'ver-asistencia',
+            'crear-asistencia',
+            'editar-asistencia',
+            'borrar-asistencia'
         ];
 
         // Looping and Inserting Array's Permissions into Permission Table
