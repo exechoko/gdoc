@@ -56,6 +56,28 @@
                 </a>
             </li>
             @endcan
+            @can('ver-curso')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'cursos' ? ' active bg-gradient-primary' : '' }} "
+                    href="{{ route('cursos.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="fas fa-chalkboard-teacher ps-2 pe-2 text-center"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Cursos</span>
+                </a>
+            </li>
+            @endcan
+            @can('ver-alumno')
+            <li class="nav-item">
+                <a class="nav-link text-white {{ $activePage == 'alumnos' ? ' active bg-gradient-primary' : '' }} "
+                    href="{{ route('alumnos.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i style="font-size: 1rem;" class="fas fa-user-graduate ps-2 pe-2 text-center"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Alumnos</span>
+                </a>
+            </li>
+            @endcan
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Datos útiles</h6>
             </li>

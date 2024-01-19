@@ -60,11 +60,19 @@
                                                 @error('dni')
                                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                                 @enderror
+                                            </div><div class="mb-3 col-md-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" name="email"
+                                                    class="form-control border border-2 p-2"
+                                                    value='{{ $user->email }}'>
+                                                @error('email')
+                                                    <p class='text-danger inputerror'>{{ $message }} </p>
+                                                @enderror
                                             </div>
                                             <div class="mb-3 col-md-4">
                                                 <label class="form-label">Contraseña</label>
                                                 <div class="form-label">
-                                                    <input type="password" name="password" id="password" class="form-control border border-2 p-2" value='{{ $user->password }}'>
+                                                    <input type="password" name="password" id="password" class="form-control border border-2 p-2" value=''>
                                                     <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                                                         <i class="fas fa-eye"></i>
                                                     </button>

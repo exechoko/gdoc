@@ -1,5 +1,15 @@
 <?php
 
+use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,13 +26,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\RolController;
-use App\Http\Controllers\SessionsController;
-use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect('sign-in');
@@ -48,6 +51,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('roles', RolController::class);
     Route::resource('usuarios', UserController::class);
+    Route::resource('cursos', CursoController::class);
+    Route::resource('alumnos', AlumnoController::class);
+    Route::resource('asistencias', AsistenciaController::class);
+    Route::resource('calificaciones', CalificacionController::class);
     Route::get('billing', function () {
         return view('pages.billing');
     })->name('billing');
