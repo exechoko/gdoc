@@ -21,11 +21,10 @@
             </form>
             <ul class="navbar-nav  justify-content-end">
                 <li class="nav-item d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                        <i class="fas fa-sign-out-alt me-sm-1"></i></i>
-                        <span class="d-sm-inline d-none"
-                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">Cerrar sesión</span>
-                    </a>
+                    <button class="nav-link text-body font-weight-bold px-0 bg-transparent border-0" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt me-sm-1"></i>
+                        <span class="d-sm-inline d-none">Cerrar sesión</span>
+                    </button>
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
