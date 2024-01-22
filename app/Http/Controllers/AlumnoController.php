@@ -118,7 +118,7 @@ class AlumnoController extends Controller
         if ($user->hasRole(['Super Admin', 'Admin'])) {
             $cursos = Curso::all();
         } else {
-            $cursos = $user->cursos->get();
+            $cursos = $user->cursos()->get();
         }
         return view('alumnos.editar', compact('alumno', 'escuelas', 'cursos'));
     }
