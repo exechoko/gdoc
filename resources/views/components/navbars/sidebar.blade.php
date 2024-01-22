@@ -36,6 +36,7 @@
                     <span class="nav-link-text ms-1">Perfil</span>
                 </a>
             </li>
+            @can('ver-rol')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'roles' ? 'active bg-gradient-primary' : '' }} "
                     href="{{ route('roles.index') }}">
@@ -45,6 +46,7 @@
                     <span class="nav-link-text ms-1">Roles</span>
                 </a>
             </li>
+            @endcan
             @can('ver-usuario')
             <li class="nav-item">
                 <a class="nav-link text-white {{ $activePage == 'usuarios' ? ' active bg-gradient-primary' : '' }} "
