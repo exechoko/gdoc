@@ -115,7 +115,7 @@ class CursoController extends Controller
             DB::beginTransaction();
             // Encuentra el alumno a actualizar
             $curso = Curso::findOrFail($id);
-            $curso::update([
+            $curso->update([
                 'users_id' => auth()->id(),
                 'escuelas_id' => $request->input('escuela_id'),
                 'nivel' => $request->input('nivel'),
