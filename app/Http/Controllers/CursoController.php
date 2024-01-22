@@ -28,12 +28,8 @@ class CursoController extends Controller
         } else {
             // Verifica si el usuario tiene el rol de "docente"
             if ($user->hasRole('Docente')) {
-                // Verifica si el usuario tiene el rol de "docente"
-                if ($user->hasRole('Docente')) {
-                    // Obtén los cursos del usuario con relaciones cargadas
-                    $cursos = $user->cursos()->with('escuela')->get();
-                    //dd($cursos);
-                }
+                // Obtén los cursos del usuario con relaciones cargadas
+                $cursos = $user->cursos()->with('escuela')->get();
             }
         }
 
@@ -93,7 +89,16 @@ class CursoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = Auth::user();
+        $curso = Curso::find($id);
+        $escuelas = Escuela::all();
+        $cursos = null;
+        if ($user->hasRole(['Super Admin', 'Admin'])) {
+            $cursos = Curso::all();
+        } else {
+            $cursos = $user->cursos()->get();
+        }
+        return view('cursos.editar', compact('curso', 'escuelas', 'cursos'));
     }
 
     /**
@@ -101,7 +106,29 @@ class CursoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'escuela_id' => 'required',
+                'nivel' => 'required',
+            ]);
+
+            DB::beginTransaction();
+            // Encuentra el alumno a actualizar
+            $curso = Curso::findOrFail($id);
+            $curso::update([
+                'users_id' => auth()->id(),
+                'escuelas_id' => $request->input('escuela_id'),
+                'nivel' => $request->input('nivel'),
+                'division' => $request->input('division'),
+                'observaciones' => $request->input('observaciones'),
+            ]);
+
+            DB::commit();
+            return redirect()->route('cursos.index')->with('success', 'Curso actualizado exitosamente');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al actualizar el curso: ' . $e->getMessage());
+        }
     }
 
     /**
