@@ -30,20 +30,16 @@ class AlumnoController extends Controller
             //dd($alumnos);
         } else {
             // Verifica si el usuario tiene el rol de "docente"
-            if ($user->hasRole('docente')) {
-                $cursosUsuario = $user->cursos;
+            if ($user->hasRole('Docente')) {
+                // Obtén los cursos del usuario con relaciones cargadas
+                $cursosUsuario = $user->cursos()->get();
 
                 // Obtén los IDs de los cursos del usuario
                 $idsCursos = $cursosUsuario->pluck('id');
 
                 // Obtén los alumnos que pertenecen a los cursos del usuario con relaciones cargadas
-                $alumnos = Alumno::with('escuela', 'curso')->whereIn('curso_id', $idsCursos)->get();
-            } /* else {
-            // Si el usuario no tiene el rol de "docente", manejar según tus necesidades
-            // Puede ser redirigir, mostrar un mensaje, etc.
-            // Por ejemplo, podrías obtener todos los alumnos nuevamente
-            $alumnos = Alumno::all();
-        }*/
+                $alumnos = Alumno::with('escuela', 'curso')->whereIn('cursos_id', $idsCursos)->get();
+            }
         }
 
         return view('alumnos.index', compact('alumnos'));
@@ -60,7 +56,7 @@ class AlumnoController extends Controller
         if ($user->hasRole(['Super Admin', 'Admin'])) {
             $cursos = Curso::all();
         } else {
-            $cursos = $user->cursos->get();
+            $cursos = $user->cursos()->get();
         }
         return view('alumnos.crear', compact('escuelas', 'cursos'));
     }
