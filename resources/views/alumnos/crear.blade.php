@@ -1,17 +1,5 @@
 <x-layout bodyClass="g-sidenav-show  bg-gray-200">
     <x-navbars.sidebar activePage="alumnos"></x-navbars.sidebar>
-    <!-- Mensajes de éxito y error -->
-    @if (Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session::get('success') }}
-        </div>
-    @endif
-
-    @if (Session::has('error'))
-        <div class="alert alert-danger">
-            {{ Session::get('error') }}
-        </div>
-    @endif
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
         <x-navbars.navs.auth titlePage="Alumnos"></x-navbars.navs.auth>
@@ -30,6 +18,18 @@
                                             </h5>
                                         </div>
                                     </div>
+                                    <!-- Mensajes de éxito y error -->
+                                    @if (Session::has('success'))
+                                        <div class="alert alert-success">
+                                            {{ Session::get('success') }}
+                                        </div>
+                                    @endif
+
+                                    @if (Session::has('error'))
+                                        <div class="alert alert-danger">
+                                            {{ Session::get('error') }}
+                                        </div>
+                                    @endif
                                     @if ($errors->any())
                                         <div class="alert alert-dark alert-dismissible fade show" role="alert">
                                             <strong>¡Revise los campos!</strong>
@@ -168,7 +168,7 @@
     <x-plugins></x-plugins>
     <script>
         /*$(document).ready(function() {
-                $('.escuelaSelect').select2();
-            });*/
+                    $('.escuelaSelect').select2();
+                });*/
     </script>
 </x-layout>
