@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     // En tus rutas
     Route::get('/obtener-notas/{alumnoId}', [CursoController::class, 'obtenerNotas'])->name('obtener-notas');
+    Route::get('/obtener-asistencias/{alumnoId}', [CursoController::class, 'obtenerAsistencias'])->name('obtener-asistencias');
 
 
     Route::get('billing', function () {

@@ -108,6 +108,25 @@ class CursoController extends Controller
         return response()->json($notasData);
     }
 
+    public function obtenerAsistencias($alumnoId)
+    {
+        //dd($alumnoId);
+        $alumno = Alumno::findOrFail($alumnoId);
+        $asistencias = $alumno->asistencias;
+        // Formatea las fechas utilizando Carbon
+        foreach ($asistencias as $asistencia) {
+            $asistencia->creado = Carbon::parse($asistencia->created_at)->format('d/m/Y');
+            $asistencia->actualizado = Carbon::parse($asistencia->updated_at)->format('d/m/Y');
+            $asistencia->asistio = $asistencia->fecha_asistencia ? 'SI' : 'NO';
+        }
+
+        $asistenciasData = [
+            'asistencias' => $asistencias,
+        ];
+
+        return response()->json($asistenciasData);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
