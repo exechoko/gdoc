@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alumno;
 use App\Models\Curso;
 use App\Models\Escuela;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +83,29 @@ class CursoController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $curso = Curso::find($id);
+        $alumnos = $curso->alumnos()->get();
+        return view('cursos.ver', compact('alumnos'));
+    }
+
+    // En tu controlador
+    public function obtenerNotas($alumnoId)
+    {
+        //dd($alumnoId);
+        $alumno = Alumno::findOrFail($alumnoId);
+        $notas = $alumno->calificaciones;
+        // Formatea las fechas utilizando Carbon
+        foreach ($notas as $nota) {
+            $nota->creado = Carbon::parse($nota->created_at)->format('d/m/Y');
+            $nota->actualizado = Carbon::parse($nota->updated_at)->format('d/m/Y');
+            $nota->materia = $nota->asignatura->nombre;
+        }
+
+        $notasData = [
+            'notas' => $notas,
+        ];
+
+        return response()->json($notasData);
     }
 
     /**

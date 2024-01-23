@@ -69,6 +69,9 @@
                                                     </div>
                                                 </td>
                                                 <td>
+                                                    <a class="btn btn-warning"
+                                                            href="{{ route('cursos.show', $curso->id) }}"><i
+                                                                class="material-icons">visibility</i></a>
                                                     @can('editar-curso')
                                                         <a class="btn btn-info"
                                                             href="{{ route('cursos.edit', $curso->id) }}"><i

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\CursoController;
@@ -55,6 +56,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('alumnos', AlumnoController::class);
     Route::resource('asistencias', AsistenciaController::class);
     Route::resource('calificaciones', CalificacionController::class);
+    Route::resource('asignaturas', AsignaturaController::class);
+
+    // En tus rutas
+    Route::get('/obtener-notas/{alumnoId}', [CursoController::class, 'obtenerNotas'])->name('obtener-notas');
+
+
     Route::get('billing', function () {
         return view('pages.billing');
     })->name('billing');
