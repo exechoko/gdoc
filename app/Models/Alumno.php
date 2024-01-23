@@ -39,6 +39,10 @@ class Alumno extends Model
 
     public function calificaciones()
     {
-        return $this->hasMany(Calificacion::class);
+        return $this->hasMany(Calificacion::class, 'alumnos_id');
+    }
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class, 'alumnos_id');
     }
 }

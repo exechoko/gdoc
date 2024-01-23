@@ -30,7 +30,7 @@ class Curso extends Model
 
     public function alumnos()
     {
-        return $this->hasMany(Alumno::class);
+        return $this->hasMany(Alumno::class, 'cursos_id');
     }
     public function asistencias()
     {
