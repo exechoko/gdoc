@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Asistencia;
 use App\Models\Curso;
 use App\Models\Escuela;
 use Carbon\Carbon;
@@ -85,7 +86,7 @@ class CursoController extends Controller
     {
         $curso = Curso::find($id);
         $alumnos = $curso->alumnos()->get();
-        return view('cursos.ver', compact('alumnos'));
+        return view('cursos.ver', compact('alumnos', 'curso'));
     }
 
     // En tu controlador
@@ -110,20 +111,20 @@ class CursoController extends Controller
 
     public function obtenerAsistencias($alumnoId)
     {
+        Carbon::setLocale('es');
         //dd($alumnoId);
         $alumno = Alumno::findOrFail($alumnoId);
         $asistencias = $alumno->asistencias;
         // Formatea las fechas utilizando Carbon
         foreach ($asistencias as $asistencia) {
             $asistencia->creado = Carbon::parse($asistencia->created_at)->format('d/m/Y');
+            //$asistencia->creado = Carbon::parse($asistencia->created_at)->format('l, j F Y');
             $asistencia->actualizado = Carbon::parse($asistencia->updated_at)->format('d/m/Y');
             $asistencia->asistio = $asistencia->fecha_asistencia ? 'SI' : 'NO';
         }
-
         $asistenciasData = [
             'asistencias' => $asistencias,
         ];
-
         return response()->json($asistenciasData);
     }
 
@@ -171,6 +172,39 @@ class CursoController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al actualizar el curso: ' . $e->getMessage());
+        }
+    }
+
+    public function nuevaAsistencia(string $id)
+    {
+        $curso = Curso::find($id);
+        $alumnos = $curso->alumnos()->get();
+        return view('cursos.nueva_asistencia', compact('alumnos', 'curso'));
+    }
+
+    public function guardarAsistencia(Request $request, string $cursoId)
+    {
+        try {
+            $request->validate([
+                'fecha_asistencia' => 'required|date',
+                'presentes' => 'required|array',
+            ]);
+            DB::beginTransaction();
+            $curso = Curso::find($cursoId);
+            $alumnos = $curso->alumnos;
+            foreach ($alumnos as $alumno) {
+                Asistencia::create([
+                    'cursos_id' => $curso->id,
+                    'alumnos_id' => $alumno->id,
+                    'fecha_asistencia' => $request->input('presentes.' . $alumno->id) === 'on' ? $request->input('fecha_asistencia') : null,
+                    'observaciones' => $request->input('observaciones'),
+                ]);
+            }
+            DB::commit();
+            return view('cursos.ver', compact('alumnos', 'curso'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al registrar las asistencias: ' . $e->getMessage());
         }
     }
 

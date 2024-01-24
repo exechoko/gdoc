@@ -15,7 +15,11 @@
                         </div>
                         <div class=" me-3 my-3 text-end">
                             <a class="btn bg-gradient-success mb-0" href="{{ route('cursos.create') }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Nuevo</a>
+                                    class="material-icons text-sm">add</i>&nbsp;Nueva evaluacion</a>
+                            <a class="btn bg-gradient-danger mb-0" href="{{ route('cursos.create') }}"><i
+                                    class="material-icons text-sm">calculate</i>&nbsp;Calificar</a>
+                            <a class="btn bg-gradient-info mb-0" href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
+                                    class="material-icons text-sm">add</i>&nbsp;Tomar asistencia</a>
                         </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
@@ -64,8 +68,7 @@
                                                     <div class="d-flex flex-column justify-content-center">
                                                         @if ($alumno->calificaciones->count() > 0)
                                                             <button id="verNotasModalBtn{{ $alumno->id }}"
-                                                                type="button" class="btn btn-info"
-                                                                data-toggle="modal"
+                                                                type="button" class="btn btn-info" data-toggle="modal"
                                                                 data-target="#verNotasModal{{ $alumno->id }}">
                                                                 Ver
                                                             </button>
@@ -132,8 +135,8 @@
                 </div>
             </div>
             <!-- Modal para asistencias -->
-            <div id="modal-asistencias" class="modal fade" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);"
-                role="dialog" aria-hidden="true">
+            <div id="modal-asistencias" class="modal fade" data-backdrop="false"
+                style="background-color: rgba(0, 0, 0, 0.5);" role="dialog" aria-hidden="true">
                 <div id="dialog" class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <!-- Contenido del modal -->
@@ -142,7 +145,8 @@
                         </div>
                         <div class="modal-body" style="min-height: 500px; overflow-x: auto; overflow-y: auto;">
                             <div class="col-lg-12" style="margin-top:20px; padding:0; min-height: 400px;">
-                                <table id="table-asistencias" class="table table-condensed table-bordered table-stripped">
+                                <table id="table-asistencias"
+                                    class="table table-condensed table-bordered table-stripped">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -193,7 +197,7 @@
                         handleClickEvent('#verNotasModalBtn{{ $alumno->id }}', function() {
                             consultarNotas({{ $alumno->id }});
                         });
-                        handleClickEvent('#verAsistenciasModalBtn{{ $alumno->id }}', function(){
+                        handleClickEvent('#verAsistenciasModalBtn{{ $alumno->id }}', function() {
                             consultarAsistencias({{ $alumno->id }});
                         });
                     @endforeach
@@ -211,6 +215,7 @@
                             }
                         });
                     }
+
                     function consultarAsistencias(alumnoId) {
                         console.log('idAlumno', alumnoId);
                         $.ajax({
@@ -224,16 +229,18 @@
                             }
                         });
                     }
+
                     function mostrarTablaAsistencias(asistencias) {
                         var tableBody = $tableAsistencias.find('tbody');
                         tableBody.empty();
 
                         // Iteramos sobre las asistencias y agregamos filas a la tabla
                         $.each(asistencias, function(index, asistencia) {
+                            var claseEstilo = asistencia.asistio === 'SI' ? 'text-success' : 'text-danger';
                             var row = '<tr>' +
                                 '<td>' + asistencia.id + '</td>' +
                                 '<td>' + asistencia.creado + '</td>' +
-                                '<td>' + asistencia.asistio + '</td>' +
+                                '<td class="' + claseEstilo + '">' + asistencia.asistio + '</td>' +
                                 '</tr>';
                             tableBody.append(row);
                         });

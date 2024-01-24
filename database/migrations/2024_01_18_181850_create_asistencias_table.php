@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cursos_id')->nullable()->constrained();
             $table->foreignId('alumnos_id')->nullable()->constrained();
-            $table->datetime('fecha_asistencia');
+            $table->datetime('fecha_asistencia')->nullable();
             $table->text('observaciones')->nullable();
             $table->timestamps();
         });
