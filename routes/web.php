@@ -58,9 +58,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('calificaciones', CalificacionController::class);
     Route::resource('asignaturas', AsignaturaController::class);
 
-    // En tus rutas
     Route::get('/obtener-notas/{alumnoId}', [CursoController::class, 'obtenerNotas'])->name('obtener-notas');
     Route::get('/obtener-asistencias/{alumnoId}', [CursoController::class, 'obtenerAsistencias'])->name('obtener-asistencias');
+    Route::get('/nueva-asistencia/{cursoId}', [CursoController::class, 'nuevaAsistencia'])->name('cursos.nueva-asistencia');
+    Route::post('/guardar-asistencia/{cursoId}', [CursoController::class, 'guardarAsistencia'])->name('cursos.guardar-asistencia');
+
 
 
     Route::get('billing', function () {
