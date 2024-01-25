@@ -14,6 +14,7 @@ class Curso extends Model
     protected $fillable = [
         'users_id',
         'escuelas_id',
+        'asignatura_id',
         'nivel',
         'division',
         'observaciones'

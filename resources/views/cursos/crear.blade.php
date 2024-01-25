@@ -55,6 +55,14 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                <select name="asignatura_id" id="" class="form-control">
+                                                    <option value="">Seleccione una Asignatura</option>
+                                                    @foreach ($asignaturas as $asignatura)
+                                                        <option value="{{ $asignatura->id }}">
+                                                            {{ $asignatura->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row col-xs-12 col-sm-12 col-md-12">

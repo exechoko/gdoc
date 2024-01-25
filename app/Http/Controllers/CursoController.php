@@ -49,7 +49,8 @@ class CursoController extends Controller
     {
         $user = Auth::user();
         $escuelas = Escuela::all();
-        return view('cursos.crear', compact('escuelas'));
+        $asignaturas = Asignatura::all();
+        return view('cursos.crear', compact('asignaturas', 'escuelas'));
     }
 
     /**
@@ -61,6 +62,7 @@ class CursoController extends Controller
         try {
             $request->validate([
                 'escuela_id' => 'required',
+                'asignatura_id' => 'required',
                 'nivel' => 'required',
             ]);
 
@@ -69,6 +71,7 @@ class CursoController extends Controller
             Curso::create([
                 'users_id' => auth()->id(),
                 'escuelas_id' => $request->input('escuela_id'),
+                'asignatura_id' => $request->input('asignatura_id'),
                 'nivel' => $request->input('nivel'),
                 'division' => $request->input('division'),
                 'observaciones' => $request->input('observaciones'),

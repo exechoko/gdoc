@@ -69,7 +69,7 @@ class AlumnoController extends Controller
         try {
             $request->validate([
                 'dni' => 'required|unique:alumnos,dni',
-                'email' => 'required|email|unique:alumnos,email',
+                //'email' => 'required|email|unique:alumnos,email',
             ]);
 
             DB::beginTransaction();
