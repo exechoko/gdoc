@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumno;
+use App\Models\Asignatura;
 use App\Models\Asistencia;
+use App\Models\Calificacion;
 use App\Models\Curso;
 use App\Models\Escuela;
+use App\Models\Evaluacion;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,7 +89,8 @@ class CursoController extends Controller
     {
         $curso = Curso::find($id);
         $alumnos = $curso->alumnos()->get();
-        return view('cursos.ver', compact('alumnos', 'curso'));
+        $asignaturas = Asignatura::all();
+        return view('cursos.ver', compact('asignaturas', 'alumnos', 'curso'));
     }
 
     // En tu controlador
@@ -97,9 +101,10 @@ class CursoController extends Controller
         $notas = $alumno->calificaciones;
         // Formatea las fechas utilizando Carbon
         foreach ($notas as $nota) {
-            $nota->creado = Carbon::parse($nota->created_at)->format('d/m/Y');
-            $nota->actualizado = Carbon::parse($nota->updated_at)->format('d/m/Y');
+            $nota->fecha = Carbon::parse($nota->evaluacion->fecha_evaluacion)->format('d/m/Y');
+            //$nota->actualizado = Carbon::parse($nota->updated_at)->format('d/m/Y');
             $nota->materia = $nota->asignatura->nombre;
+            $nota->observaciones = $nota->evaluacion->observaciones;
         }
 
         $notasData = [
@@ -117,7 +122,7 @@ class CursoController extends Controller
         $asistencias = $alumno->asistencias;
         // Formatea las fechas utilizando Carbon
         foreach ($asistencias as $asistencia) {
-            $asistencia->creado = Carbon::parse($asistencia->created_at)->format('d/m/Y');
+            $asistencia->fecha = Carbon::parse($asistencia->created_at)->format('d/m/Y');
             //$asistencia->creado = Carbon::parse($asistencia->created_at)->format('l, j F Y');
             $asistencia->actualizado = Carbon::parse($asistencia->updated_at)->format('d/m/Y');
             $asistencia->asistio = $asistencia->fecha_asistencia ? 'SI' : 'NO';
@@ -201,10 +206,93 @@ class CursoController extends Controller
                 ]);
             }
             DB::commit();
-            return view('cursos.ver', compact('alumnos', 'curso'));
+            $asignaturas = Asignatura::all();
+            return view('cursos.ver', compact('asignaturas', 'alumnos', 'curso'));
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error al registrar las asistencias: ' . $e->getMessage());
+        }
+    }
+
+    public function nuevaEvaluacion(Request $request, $cursoId)
+    {
+        //dd($request->all());
+        //dd($cursoId);
+        try {
+            $request->validate([
+                'asignatura' => 'required',
+                'fecha_evaluacion' => 'required|date',
+            ]);
+            DB::beginTransaction();
+            $curso = Curso::find($cursoId);
+            Evaluacion::create([
+                'cursos_id' => $curso->id,
+                'asignatura_id' => $request->asignatura,
+                'fecha_evaluacion' => $request->fecha_evaluacion,
+                'observaciones' => $request->input('observaciones'),
+            ]);
+            DB::commit();
+            return response()->json(['message' => 'Evaluacion creada exitosamente']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al crear la evaluacion: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function nuevaCalificacion(string $id)
+    {
+        $curso = Curso::find($id);
+        $asignaturas = Asignatura::all();
+        $alumnos = $curso->alumnos()->get();
+        $evaluaciones = $curso->evaluaciones()->get();
+        ;
+        return view('cursos.calificar', compact('evaluaciones', 'asignaturas', 'alumnos', 'curso'));
+    }
+
+    public function obtenerCalificaciones($evaluacionId)
+    {
+        // Obtén las calificaciones para la evaluación seleccionada
+        $calificaciones = Calificacion::where('evaluacion_id', $evaluacionId)->with('alumno')->get();
+        return response()->json($calificaciones);
+    }
+
+    public function calificar(Request $request, string $cursoId)
+    {
+        //dd($request->all());
+        try {
+            $request->validate([
+                'asignatura_id' => 'required',
+                'evaluacion_id' => 'required',
+                'notas' => 'required|array',
+                'observaciones' => 'required|array',
+            ]);
+            DB::beginTransaction();
+            $curso = Curso::find($cursoId);
+            $evaluacion = Evaluacion::find($request->evaluacion_id);
+            $asignatura = Asignatura::find($request->asignatura_id);
+            $alumnos = $curso->alumnos;
+
+            //dd($alumnos);
+            foreach ($alumnos as $alumno) {
+                //Obtener la nota específica para cada alumno
+                $nota = $request->input('notas.' . $alumno->id);
+                $observacion = $request->input('observaciones.' . $alumno->id);
+                Calificacion::create([
+                    'evaluacion_id' => $evaluacion->id,
+                    'asignatura_id' => $asignatura->id,
+                    'cursos_id' => $curso->id,
+                    'alumnos_id' => $alumno->id,
+                    'nota' => $nota,
+                    'observaciones' => $observacion,
+                ]);
+            }
+            DB::commit();
+
+            $asignaturas = Asignatura::all();
+            return view('cursos.ver', compact('asignaturas', 'alumnos', 'curso'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al registrar las calificaciones: ' . $e->getMessage());
         }
     }
 

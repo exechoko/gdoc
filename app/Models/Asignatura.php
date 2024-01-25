@@ -17,4 +17,7 @@ class Asignatura extends Model
     public function calificaciones(){
         return $this->hasMany(Calificacion::class);
     }
+    public function evaluaciones(){
+        return $this->hasMany(Evaluacion::class);
+    }
 }

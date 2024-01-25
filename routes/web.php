@@ -59,9 +59,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('asignaturas', AsignaturaController::class);
 
     Route::get('/obtener-notas/{alumnoId}', [CursoController::class, 'obtenerNotas'])->name('obtener-notas');
+    Route::get('/obtener-calificaciones/{evaluacionId}', [CursoController::class, 'obtenerCalificaciones'])->name('obtener-calificaciones');
     Route::get('/obtener-asistencias/{alumnoId}', [CursoController::class, 'obtenerAsistencias'])->name('obtener-asistencias');
     Route::get('/nueva-asistencia/{cursoId}', [CursoController::class, 'nuevaAsistencia'])->name('cursos.nueva-asistencia');
+    Route::get('/nueva-calificacion/{cursoId}', [CursoController::class, 'nuevaCalificacion'])->name('cursos.nueva-calificacion');
     Route::post('/guardar-asistencia/{cursoId}', [CursoController::class, 'guardarAsistencia'])->name('cursos.guardar-asistencia');
+    Route::post('/calificar/{cursoId}', [CursoController::class, 'calificar'])->name('cursos.calificar');
+    Route::post('/nueva-evaluacion/{cursoId}', [CursoController::class, 'nuevaEvaluacion'])->name('cursos.nueva-evaluacion');
 
 
 

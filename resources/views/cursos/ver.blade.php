@@ -14,11 +14,15 @@
                             </div>
                         </div>
                         <div class=" me-3 my-3 text-end">
-                            <a class="btn bg-gradient-success mb-0" href="{{ route('cursos.create') }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;Nueva evaluacion</a>
-                            <a class="btn bg-gradient-danger mb-0" href="{{ route('cursos.create') }}"><i
+                            <a id="nuevaEvaluacionBtn{{ $curso->id }}" class="btn bg-gradient-success mb-0"
+                                data-toggle="modal" data-target="#nuevaEvaluacion{{ $curso->id }}">
+                                <i class="material-icons text-sm">add</i>&nbsp;Nueva evaluación
+                            </a>
+                            <a class="btn bg-gradient-danger mb-0"
+                                href="{{ route('cursos.nueva-calificacion', $curso->id) }}"><i
                                     class="material-icons text-sm">calculate</i>&nbsp;Calificar</a>
-                            <a class="btn bg-gradient-info mb-0" href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
+                            <a class="btn bg-gradient-info mb-0"
+                                href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;Tomar asistencia</a>
                         </div>
                         <div class="card-body px-0 pb-2">
@@ -100,6 +104,48 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal para crear evaluacion -->
+            <div id="modal-nueva-evaluacion" class="modal fade" data-backdrop="false"
+                style="background-color: rgba(0, 0, 0, 0.5);" role="dialog" aria-hidden="true">
+                <div id="dialog" class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <!-- Contenido del modal -->
+                        <div class="modal-header bg-info">
+                            <h4 class="modal-title text-white">Nueva evaluación</h4>
+                        </div>
+                        <div class="modal-body" style="overflow-x: auto; overflow-y: auto;">
+                            <div class="col-lg-12">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" name="fecha_evaluacion" class="form-control">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <select name="asignatura_id" id="" class="form-control">
+                                    <option value="">Seleccione la asignatura</option>
+                                    @foreach ($asignaturas as $asignatura)
+                                        <option value="{{ $asignatura->id }}">
+                                            {{ $asignatura->nombre }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="form-label">Observaciones</label>
+                                <textarea type="text" name="observaciones" class="form-control border border-2 p-2" value=''></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cerrarModalNuevaEvaluacion" class="btn btn-danger" data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                                <span>Cerrar</span>
+                            </button>
+                            <button id="guardarNuevaEvaluacion" class="btn btn-success" data-dismiss="modal">
+                                <i class="fa fa-times"></i>
+                                <span>Guardar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Modal para notas -->
             <div id="modal-notas" class="modal fade" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);"
                 role="dialog" aria-hidden="true">
@@ -175,6 +221,7 @@
                     var $tableAsistencias = $('#table-asistencias');
                     var $modalNotas = $('#modal-notas');
                     var $modalAsistencias = $('#modal-asistencias');
+                    var $modalNuevaEvaluacion = $('#modal-nueva-evaluacion');
 
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalNotas.find('.btn-danger').on('click', function() {
@@ -183,6 +230,14 @@
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalAsistencias.find('.btn-danger').on('click', function() {
                         $modalAsistencias.modal('hide');
+                    });
+                    // Asignar manejador de eventos para el botón "Cerrar"
+                    $modalNuevaEvaluacion.find('#cerrarModalNuevaEvaluacion').on('click', function() {
+                        $modalNuevaEvaluacion.modal('hide');
+                    });
+                    //Guardar evaluacion
+                    $modalNuevaEvaluacion.find('#guardarNuevaEvaluacion').on('click', function() {
+                        nuevaEvaluacion({{ $curso->id }});
                     });
 
                     function handleClickEvent(id, consultarFunction) {
@@ -201,6 +256,34 @@
                             consultarAsistencias({{ $alumno->id }});
                         });
                     @endforeach
+
+                    handleClickEvent('#nuevaEvaluacionBtn{{ $curso->id }}', function() {
+                        $('#modal-nueva-evaluacion').modal('show');
+                    });
+
+                    function nuevaEvaluacion(cursoId) {
+                        console.log('idCurso', cursoId);
+                        var fechaEvaluacion = $('[name="fecha_evaluacion"]').val();
+                        var asignaturaId = $('[name="asignatura_id"]').val();
+                        var observaciones = $('[name="observaciones"]').val();
+                        $.ajax({
+                            url: '/nueva-evaluacion/' + cursoId,
+                            type: 'POST',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                fecha_evaluacion: fechaEvaluacion,
+                                asignatura: asignaturaId,
+                                observaciones: observaciones
+                            },
+                            success: function(data) {
+                                console.log(data);
+                                $modalNuevaEvaluacion.modal('hide');
+                            },
+                            error: function(error) {
+                                console.error(error);
+                            }
+                        });
+                    }
 
                     function consultarNotas(alumnoId) {
                         console.log('idAlumno', alumnoId);
@@ -239,7 +322,7 @@
                             var claseEstilo = asistencia.asistio === 'SI' ? 'text-success' : 'text-danger';
                             var row = '<tr>' +
                                 '<td>' + asistencia.id + '</td>' +
-                                '<td>' + asistencia.creado + '</td>' +
+                                '<td>' + asistencia.fecha + '</td>' +
                                 '<td class="' + claseEstilo + '">' + asistencia.asistio + '</td>' +
                                 '</tr>';
                             tableBody.append(row);
@@ -258,7 +341,7 @@
                                 '<td>' + nota.materia + '</td>' +
                                 '<td>' + nota.nota + '</td>' +
                                 '<td>' + (nota.observaciones ? nota.observaciones : 'N/A') + '</td>' +
-                                '<td>' + nota.creado + '</td>' +
+                                '<td>' + nota.fecha + '</td>' +
                                 '</tr>';
                             tableBody.append(row);
                         });

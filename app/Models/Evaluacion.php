@@ -5,32 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Calificacion extends Model
+class Evaluacion extends Model
 {
     use HasFactory;
-    protected $table = 'calificaciones';
+    protected $table = 'evaluaciones';
     protected $fillable = [
-        'evaluacion_id',
         'asignatura_id',
         'cursos_id',
-        'alumnos_id',
-        'nota',
+        'fecha_evaluacion',
         'observaciones'
     ];
 
     public function curso(){
         return $this->belongsTo(Curso::class, 'cursos_id');
     }
-
-    public function alumno(){
-        return $this->belongsTo(Alumno::class, 'alumnos_id');
-    }
-
-    public function evaluacion(){
-        return $this->belongsTo(Evaluacion::class, 'evaluacion_id');
-    }
-
     public function asignatura(){
         return $this->belongsTo(Asignatura::class, 'asignatura_id');
+    }
+
+    public function calificacion(){
+        return $this->hasMany(Calificacion::class);
     }
 }

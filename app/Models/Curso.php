@@ -36,4 +36,8 @@ class Curso extends Model
     {
         return $this->hasMany(Asistencia::class);
     }
+    public function evaluaciones()
+    {
+        return $this->hasMany(Evaluacion::class, 'cursos_id');
+    }
 }
