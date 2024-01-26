@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cursos', function (Blueprint $table) {
-            $table->foreignId('users_id')->after('id')->nullable()->constrained();
+            $table->foreignId('user_id')->after('id')->nullable()->constrained();
         });
     }
 
@@ -23,9 +23,9 @@ return new class extends Migration
     {
         Schema::table('cursos', function (Blueprint $table) {
             // Eliminar la restricción de clave externa antes de eliminar la columna
-            $table->dropForeign(['users_id']);
+            $table->dropForeign(['user_id']);
             // Eliminar la columna
-            $table->dropColumn('users_id');
+            $table->dropColumn('user_id');
         });
     }
 };

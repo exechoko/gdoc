@@ -12,7 +12,7 @@ class Curso extends Model
     use HasFactory;
     protected $table = 'cursos';
     protected $fillable = [
-        'users_id',
+        'user_id',
         'escuelas_id',
         'asignatura_id',
         'nivel',
@@ -22,7 +22,7 @@ class Curso extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'users_id');
+        return $this->belongsTo(User::class);
     }
     public function escuela()
     {

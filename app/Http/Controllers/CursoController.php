@@ -69,7 +69,7 @@ class CursoController extends Controller
             DB::beginTransaction();
             // Crea el curso y guarda directamente
             Curso::create([
-                'users_id' => auth()->id(),
+                'user_id' => auth()->id(),
                 'escuelas_id' => $request->input('escuela_id'),
                 'asignatura_id' => $request->input('asignatura_id'),
                 'nivel' => $request->input('nivel'),
@@ -168,7 +168,7 @@ class CursoController extends Controller
             // Encuentra el alumno a actualizar
             $curso = Curso::findOrFail($id);
             $curso->update([
-                'users_id' => auth()->id(),
+                'user_id' => auth()->id(),
                 'escuelas_id' => $request->input('escuela_id'),
                 'nivel' => $request->input('nivel'),
                 'division' => $request->input('division'),
