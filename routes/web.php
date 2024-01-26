@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\AsignaturaController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
@@ -67,7 +68,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/calificar/{cursoId}', [CursoController::class, 'calificar'])->name('cursos.calificar');
     Route::post('/nueva-evaluacion/{cursoId}', [CursoController::class, 'nuevaEvaluacion'])->name('cursos.nueva-evaluacion');
 
-
+    Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index');
+    Route::post('/calendario/fetch-events', [CalendarioController::class, 'fetchEvents'])->name('calendario.fetchEvents');
 
     Route::get('billing', function () {
         return view('pages.billing');
