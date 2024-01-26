@@ -37,21 +37,21 @@ class SuperAdminSeeder extends Seeder
             $superAdminUser = User::factory()->create([
                 'name' => 'Super Admin',
                 'email' => 'superadmin@gdoc.com',
-                'password' => 123456
+                'password' => 'Exe33624410'
             ]);
         }
         if (!$adminUser) {
             $admin = User::create([
                 'name' => 'Admin',
                 'email' => 'admin@gdoc.com',
-                'password' => 123456
+                'password' => 'Exe33624410'
             ]);
         }
         if (!$standardUser) {
             $standardUser = User::create([
-                'name' => 'Standard',
-                'email' => 'standard@gdoc.com',
-                'password' => 123456
+                'name' => 'Docente',
+                'email' => 'docente@gdoc.com',
+                'password' => 'Exe33624410'
             ]);
         }
 

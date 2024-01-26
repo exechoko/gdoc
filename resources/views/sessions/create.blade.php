@@ -51,7 +51,7 @@
                                     <div class="text-center">
                                         <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Ingresar</button>
                                     </div>
-                                    <p class="mt-4 text-sm text-center">
+                                    <!--p class="mt-4 text-sm text-center">
                                         No tiene cuenta?
                                         <a href="{{ route('register') }}"
                                             class="text-primary text-gradient font-weight-bold">Registrese</a>
@@ -60,7 +60,7 @@
                                         Olvido su contraseña? Recupere su cuenta desde
                                         <a href="{{ route('verify') }}"
                                             class="text-primary text-gradient font-weight-bold">aquí</a>
-                                    </p>
+                                    </p-->
                                 </form>
                             </div>
                         </div>

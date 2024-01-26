@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     {
         $superAdmin = Role::create(['name' => 'Super Admin']);
         $admin = Role::create(['name' => 'Admin']);
-        $standard = Role::create(['name' => 'Standard']);
+        $standard = Role::create(['name' => 'Docente']);
 
         $superAdmin->givePermissionTo([
             'ver-rol',

@@ -30,13 +30,13 @@
                     </div>
                 </div>
             </div>
-            <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var calendarEl = document.getElementById('calendar');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         locale: 'es',
-                        initialView: 'dayGridMonth',
+                        //initialView: 'dayGridMonth',
+                        initialView: 'multiMonthYear',
                         events: @json($eventos),
 
                         eventClick: function(info) {
