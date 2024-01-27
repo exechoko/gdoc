@@ -20,4 +20,8 @@ class Asignatura extends Model
     public function evaluaciones(){
         return $this->hasMany(Evaluacion::class);
     }
+    public function horarios()
+    {
+        return $this->hasMany(Horario::class);
+    }
 }

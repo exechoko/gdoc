@@ -36,4 +36,8 @@ class Escuela extends Model
     {
         return $this->hasMany(Alumno::class);
     }
+    public function horarios()
+    {
+        return $this->hasMany(Horario::class);
+    }
 }

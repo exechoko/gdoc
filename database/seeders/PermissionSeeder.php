@@ -52,7 +52,12 @@ class PermissionSeeder extends Seeder
             'ver-asistencia',
             'crear-asistencia',
             'editar-asistencia',
-            'borrar-asistencia'
+            'borrar-asistencia',
+
+            'ver-horario',
+            'crear-horario',
+            'editar-horario',
+            'borrar-horario'
         ];
 
         // Looping and Inserting Array's Permissions into Permission Table
