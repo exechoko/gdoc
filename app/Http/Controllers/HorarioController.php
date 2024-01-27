@@ -34,7 +34,7 @@ class HorarioController extends Controller
             if ($user->hasRole('Docente')) {
                 $cursos = $user->cursos()->get();
                 $idsCursos = $cursos->pluck('id');
-                $horarios = Horario::with('escuela', 'curso', 'asignatura')->whereIn('cursos_id', $idsCursos)->get();
+                $horarios = Horario::with('escuela', 'curso', 'asignatura')->whereIn('curso_id', $idsCursos)->get();
             }
         }
         return view('horarios.index', compact('horarios', 'cursos', 'asignaturas', 'escuelas'));
