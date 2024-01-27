@@ -37,6 +37,17 @@
                         locale: 'es',
                         //initialView: 'dayGridMonth',
                         initialView: 'multiMonthYear',
+                        headerToolbar: {
+                            left: 'prev,next',
+                            center: 'title',
+                            right: 'multiMonthYear,dayGridMonth,dayGridWeek' // user can switch between the two
+                        },
+                        /*initialView: 'dayGridYear',
+                        headerToolbar: {
+                            left: 'prev,next',
+                            center: 'title',
+                            right: 'dayGridYear,dayGridWeek' // user can switch between the two
+                        },*/
                         events: @json($eventos),
 
                         eventClick: function(info) {

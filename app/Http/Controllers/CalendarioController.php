@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumno;
 use App\Models\Curso;
 use App\Models\Evaluacion;
+use App\Models\Horario;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +49,18 @@ class CalendarioController extends Controller
         //dd($cursos);
         $tipo_evento = $request->tipo_evento;
         $nuevosEventos = [];
+        $eventos = [];
 
         switch ($tipo_evento) {
+            case 'Horarios':
+                $horarios = Horario::with('curso')
+                    ->whereIn('curso_id', $cursos->pluck('id'))
+                    ->get();
+                foreach ($horarios as $horario) {
+                    $eventos = $this->generateRecurringEvents($horario->dia_semana, $horario->ingreso, $horario->salida, $horario->curso);
+                    $nuevosEventos = array_merge($nuevosEventos, $eventos);
+                }
+                break;
             case 'Cumpleaños':
                 $alumnos = Alumno::with('curso')
                     ->whereIn('cursos_id', $cursos->pluck('id'))
@@ -89,5 +100,42 @@ class CalendarioController extends Controller
                 break;
         }
         return response()->json(['events' => $nuevosEventos]);
+    }
+
+    private function generateRecurringEvents($diaSemana, $horaInicio, $horaFin, $curso)
+    {
+        $eventos = [];
+        $isoDay = $this->getIsoDay($diaSemana);
+        if ($isoDay === null) {
+            return $eventos;
+        }
+        // Configura las fechas de inicio y fin según el día de la semana y las horas proporcionadas
+        $startDateTime = now()->next($isoDay)->setTimeFromTimeString($horaInicio);
+        $endDateTime = now()->next($isoDay)->setTimeFromTimeString($horaFin);
+        // Genera eventos para cada día de la semana en el rango de fechas proporcionado
+        while ($startDateTime->lte(now()->addMonths(6))) {
+            $eventos[] = [
+                'title' => $curso->escuela->nombre . ' - ' . $curso->nivel . ' ' . $curso->division,
+                'start' => $startDateTime->format('Y-m-d H:i:s'),
+                'end' => $endDateTime->format('Y-m-d H:i:s'),
+            ];
+            $startDateTime->addWeek();
+            $endDateTime->addWeek();
+        }
+        return $eventos;
+    }
+
+    private function getIsoDay($diaSemana)
+    {
+        $diasSemana = [
+            'Lunes' => 1,
+            'Martes' => 2,
+            'Miércoles' => 3,
+            'Jueves' => 4,
+            'Viernes' => 5,
+            'Sábado' => 6,
+            'Domingo' => 7,
+        ];
+        return $diasSemana[$diaSemana] ?? null;
     }
 }
