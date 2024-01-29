@@ -47,22 +47,29 @@
                                         @csrf
                                         <div class="col-xs-12 col-sm-12 col-md-12">
                                             <div class="form-group col-md-12">
-                                                <select name="escuela_id" id="" class="form-control">
-                                                    <option value="">Seleccione una escuela</option>
-                                                    @foreach ($escuelas as $escuela)
-                                                        <option value="{{ $escuela->id }}">
-                                                            {{ $escuela->nombre }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <select name="asignatura_id" id="" class="form-control">
-                                                    <option value="">Seleccione una Asignatura</option>
-                                                    @foreach ($asignaturas as $asignatura)
-                                                        <option value="{{ $asignatura->id }}">
-                                                            {{ $asignatura->nombre }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                                <div class="mb-3">
+                                                    <select class="form-select m" id="escuela_select" name="escuela_id"
+                                                        data-placeholder="Seleccione una escuela">
+                                                        <option value=""></option>
+                                                        @foreach ($escuelas as $escuela)
+                                                            <option value="{{ $escuela->id }}">
+                                                                {{ $escuela->nombre }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <select class="form-select" id="asignatura_select"
+                                                        name="asignatura_id"
+                                                        data-placeholder="Seleccione una asignatura">
+                                                        <option value=""></option>
+                                                        @foreach ($asignaturas as $asignatura)
+                                                            <option value="{{ $asignatura->id }}">
+                                                                {{ $asignatura->nombre }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row col-xs-12 col-sm-12 col-md-12">
@@ -102,8 +109,15 @@
     </main>
     <x-plugins></x-plugins>
     <script>
-        /*$(document).ready(function() {
-                    $('.escuelaSelect').select2();
-                });*/
+        $('#escuela_select').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+        });
+        $('#asignatura_select').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+        });
     </script>
 </x-layout>

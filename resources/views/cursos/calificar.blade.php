@@ -17,23 +17,29 @@
                             @csrf
                             <div class="card-body row col-xs-12 col-sm-12 col-md-12">
                                 <div class="m-3 col-md-4">
-                                    <select name="asignatura_id" id="" class="form-control">
-                                        <option value="">Seleccione la asignatura</option>
-                                        @foreach ($asignaturas as $asignatura)
-                                            <option value="{{ $asignatura->id }}">
-                                                {{ $asignatura->nombre }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <!-- Modifica tu segundo select para agregarle un evento onchange -->
-                                    <select name="evaluacion_id" id="evaluacion_id" class="form-control">
-                                        <option value="">Seleccione la evaluación</option>
-                                        @foreach ($evaluaciones as $evaluacion)
-                                            <option value="{{ $evaluacion->id }}">
-                                                {{ $evaluacion->fecha_evaluacion }} {{ $evaluacion->observaciones }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="mb-3">
+                                        <select class="form-select" id="asignatura_id" name="asignatura_id"
+                                            data-placeholder="Seleccione una asignatura">
+                                            <option value=""></option>
+                                            @foreach ($asignaturas as $asignatura)
+                                                <option value="{{ $asignatura->id }}">
+                                                    {{ $asignatura->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <select class="form-select" id="evaluacion_id" name="evaluacion_id"
+                                            data-placeholder="Seleccione la evaluación">
+                                            <option value=""></option>
+                                            @foreach ($evaluaciones as $evaluacion)
+                                                <option value="{{ $evaluacion->id }}">
+                                                    {{ $evaluacion->fecha_evaluacion }} {{ $evaluacion->observaciones }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    
                                 </div>
                                 <!-- Agrega un nuevo div para contener la tabla -->
                                 <div id="calificacionesTableContainer" class="table-responsive p-0"></div>
@@ -112,6 +118,18 @@
             <script>
                 $(document).ready(function() {
                     var $calificacionesTableBody = $('#calificacionesTableBody');
+                    $('#evaluacion_id').select2({
+                        theme: "bootstrap-5",
+                        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                            'style',
+                        placeholder: $(this).data('placeholder'),
+                    });
+                    $('#asignatura_id').select2({
+                        theme: "bootstrap-5",
+                        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                            'style',
+                        placeholder: $(this).data('placeholder'),
+                    });
                     var asignaturaSelect = $('#asignatura_id');
                     var evaluacionSelect = $('#evaluacion_id');
 

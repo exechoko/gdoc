@@ -89,7 +89,8 @@
                                                     @endif
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
-                                                    <p class="text-xs text-secondary mb-0">{{ $horario->dia_semana }}</p>
+                                                    <p class="text-xs text-secondary mb-0">{{ $horario->dia_semana }}
+                                                    </p>
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
                                                     <p class="text-xs text-secondary mb-0">{{ $horario->ingreso }}</p>
@@ -103,14 +104,11 @@
                                                 </td>
                                                 <td>
                                                     @can('editar-horario')
-                                                        <a class="btn btn-info"
-                                                            href="#"><i
+                                                        <a class="btn btn-info" href="#"><i
                                                                 class="material-icons">edit</i></a>
                                                     @endcan
                                                     @can('borrar-horario')
-                                                        <form method="POST"
-                                                            action="#}"
-                                                            style="display:inline">
+                                                        <form method="POST" action="#}" style="display:inline">
                                                             @method('DELETE')
                                                             @csrf
                                                             <button type="submit" class="btn btn-danger"><i

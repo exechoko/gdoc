@@ -121,31 +121,29 @@
                                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                                 @enderror
                                             </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">Escuela</label>
-                                                    <select name="escuela_id" id="" class="form-control">
-                                                        <option value="">Seleccione una escuela</option>
-                                                        @foreach ($escuelas as $escuela)
-                                                            <option value="{{ $escuela->id }}">
-                                                                {{ $escuela->nombre }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Escuela</label>
+                                                <select class="form-select m" id="escuela_select" name="escuela_id"
+                                                    data-placeholder="Seleccione una escuela">
+                                                    <option value=""></option>
+                                                    @foreach ($escuelas as $escuela)
+                                                        <option value="{{ $escuela->id }}">
+                                                            {{ $escuela->nombre }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="col-xs-12 col-sm-12 col-md-3">
-                                                <div class="form-group">
-                                                    <label for="">Curso</label>
-                                                    <select name="curso_id" id="" class="form-control">
-                                                        <option value="">Seleccione un curso</option>
-                                                        @foreach ($cursos as $curso)
-                                                            <option value="{{ $curso->id }}">
-                                                                {{ $curso->nivel }} {{ $curso->division }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Curso</label>
+                                                <select class="form-select m" id="curso_select" name="curso_id"
+                                                    data-placeholder="Seleccione un curso">
+                                                    <option value=""></option>
+                                                    @foreach ($cursos as $curso)
+                                                        <option value="{{ $curso->id }}">
+                                                            {{ $curso->nivel }} {{ $curso->division }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                             <div class="mb-3 col-md-12">
                                                 <label class="form-label">Observaciones</label>
@@ -167,8 +165,15 @@
     </main>
     <x-plugins></x-plugins>
     <script>
-        /*$(document).ready(function() {
-                    $('.escuelaSelect').select2();
-                });*/
+        $('#escuela_select').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+        });
+        $('#curso_select').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+        });
     </script>
 </x-layout>

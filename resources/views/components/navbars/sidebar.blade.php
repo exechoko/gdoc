@@ -81,7 +81,7 @@
             </li>
             @endcan
             <li class="nav-item">
-                <a class="nav-link text-white {{ $activePage == 'horario' ? ' active bg-gradient-primary' : '' }} "
+                <a class="nav-link text-white {{ $activePage == 'horarios' ? ' active bg-gradient-primary' : '' }} "
                     href="{{ route('horarios.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i style="font-size: 1rem;" class="fas fa-clock ps-2 pe-2 text-center"></i>

@@ -45,9 +45,10 @@
                                         @method('PATCH')
                                         @csrf
                                         <div class="row col-xs-12 col-sm-12 col-md-12">
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="">Escuela</label>
-                                                <select name="escuela_id" id="" class="form-control">
+                                                <select class="form-select m" id="escuela_select" name="escuela_id"
+                                                    data-placeholder="Seleccione una escuela">
                                                     <option value="{{ $curso->escuela->id }}">
                                                         {{ $curso->escuela->nombre }}</option>
                                                     @foreach ($escuelas as $escuela)
@@ -96,8 +97,10 @@
     </main>
     <x-plugins></x-plugins>
     <script>
-        /*$(document).ready(function() {
-                    $('.escuelaSelect').select2();
-                });*/
+        $('#escuela_select').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+        });
     </script>
 </x-layout>

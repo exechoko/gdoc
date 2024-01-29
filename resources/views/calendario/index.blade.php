@@ -16,14 +16,17 @@
                         <form method="POST" action="{{ route('calendario.index') }}">
                             @csrf
                             <div class="card-body row col-xs-12 col-sm-12 col-md-12">
-                                <select name="tipo_evento" id="tipo_evento" class="form-control">
-                                    <option value="">Tipo de Eventos</option>
-                                    @foreach ($tipos_evento as $tipo)
-                                        <option value="{{ $tipo }}">
-                                            {{ $tipo }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="mb-3">
+                                    <select class="form-select m" id="tipo_evento" name="tipo_evento"
+                                        data-placeholder="Tipo de eventos">
+                                        <option value=""></option>
+                                        @foreach ($tipos_evento as $tipo)
+                                            <option value="{{ $tipo }}">
+                                                {{ $tipo }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 <div id="calendar"></div>
                             </div>
                         </form>
@@ -32,6 +35,13 @@
             </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
+                    $('#tipo_evento').select2({
+                        theme: "bootstrap-5",
+                        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :
+                            'style',
+                        placeholder: $(this).data('placeholder'),
+                    });
+
                     var calendarEl = document.getElementById('calendar');
                     var calendar = new FullCalendar.Calendar(calendarEl, {
                         locale: 'es',

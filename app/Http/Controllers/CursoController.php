@@ -280,14 +280,18 @@ class CursoController extends Controller
                 //Obtener la nota específica para cada alumno
                 $nota = $request->input('notas.' . $alumno->id);
                 $observacion = $request->input('observaciones.' . $alumno->id);
-                Calificacion::create([
-                    'evaluacion_id' => $evaluacion->id,
-                    'asignatura_id' => $asignatura->id,
-                    'cursos_id' => $curso->id,
-                    'alumnos_id' => $alumno->id,
-                    'nota' => $nota,
-                    'observaciones' => $observacion,
-                ]);
+                Calificacion::updateOrCreate(
+                    [
+                        'evaluacion_id' => $evaluacion->id,
+                        'asignatura_id' => $asignatura->id,
+                        'cursos_id' => $curso->id,
+                        'alumnos_id' => $alumno->id,
+                    ],
+                    [
+                        'nota' => $nota,
+                        'observaciones' => $observacion,
+                    ]
+                );
             }
             DB::commit();
 
