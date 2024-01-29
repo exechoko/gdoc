@@ -30,9 +30,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return redirect('sign-in');
-})->middleware('guest');
+})->middleware('guest');*/
 Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
 Route::get('sign-in', [SessionsController::class, 'create'])->middleware('guest')->name('login');
