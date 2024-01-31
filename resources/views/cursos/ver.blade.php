@@ -2,7 +2,7 @@
     <x-navbars.sidebar activePage="cursos"></x-navbars.sidebar>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <!-- Navbar -->
-        <x-navbars.navs.auth titlePage="Cursos"></x-navbars.navs.auth>
+        <x-navbars.navs.auth titlePage="Ver Curso"></x-navbars.navs.auth>
         <!-- End Navbar -->
         <div class="container-fluid py-4">
             <div class="row">
@@ -13,7 +13,7 @@
                                 <h6 class="text-white mx-3"><strong> Administrar curso</strong></h6>
                             </div>
                         </div>
-                        <div class=" me-3 my-3 text-end">
+                        <div class="me-3 my-3 text-end">
                             <a id="nuevaEvaluacionBtn{{ $curso->id }}" class="btn bg-gradient-success mb-0"
                                 data-toggle="modal" data-target="#nuevaEvaluacion{{ $curso->id }}">
                                 <i class="material-icons text-sm">add</i>&nbsp;Nueva evaluación
