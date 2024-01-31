@@ -13,6 +13,7 @@ class Asistencia extends Model
         'cursos_id',
         'alumnos_id',
         'fecha_asistencia',
+        'asistio',
         'observaciones'
     ];
 

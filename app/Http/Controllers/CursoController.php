@@ -93,7 +93,8 @@ class CursoController extends Controller
         $curso = Curso::find($id);
         $alumnos = $curso->alumnos()->get();
         $asignaturas = Asignatura::all();
-        return view('cursos.ver', compact('asignaturas', 'alumnos', 'curso'));
+        $fechasAsistencia = Asistencia::where('cursos_id', $curso)->pluck('fecha_asistencia')->unique();
+        return view('cursos.ver', compact('asignaturas', 'alumnos', 'curso', 'fechasAsistencia'));
     }
 
     // En tu controlador
@@ -125,10 +126,9 @@ class CursoController extends Controller
         $asistencias = $alumno->asistencias;
         // Formatea las fechas utilizando Carbon
         foreach ($asistencias as $asistencia) {
-            $asistencia->fecha = Carbon::parse($asistencia->created_at)->format('d/m/Y');
-            //$asistencia->creado = Carbon::parse($asistencia->created_at)->format('l, j F Y');
+            $asistencia->fecha = Carbon::parse($asistencia->fecha_asistencia)->format('d/m/Y H:d');
             $asistencia->actualizado = Carbon::parse($asistencia->updated_at)->format('d/m/Y');
-            $asistencia->asistio = $asistencia->fecha_asistencia ? 'SI' : 'NO';
+            $asistencia->asistio = $asistencia->asistio ? 'SI' : 'NO';
         }
         $asistenciasData = [
             'asistencias' => $asistencias,
@@ -201,12 +201,31 @@ class CursoController extends Controller
             $curso = Curso::find($cursoId);
             $alumnos = $curso->alumnos;
             foreach ($alumnos as $alumno) {
-                Asistencia::create([
-                    'cursos_id' => $curso->id,
-                    'alumnos_id' => $alumno->id,
-                    'fecha_asistencia' => $request->input('presentes.' . $alumno->id) === 'on' ? $request->input('fecha_asistencia') : null,
-                    'observaciones' => $request->input('observaciones'),
-                ]);
+                $alumnoId = $alumno->id;
+                // Verificar si el alumno está presente
+                $estaPresente = isset($request->presentes[$alumnoId]) && $request->presentes[$alumnoId] === "on";
+                $fechaAsistencia = $request->fecha_asistencia;
+                // Verificar si ya existe una asistencia para este alumno, curso y fecha
+                $asistenciaExistente = Asistencia::where('cursos_id', $curso->id)
+                    ->where('alumnos_id', $alumnoId)
+                    ->where('fecha_asistencia', $fechaAsistencia)
+                    ->first();
+                if ($asistenciaExistente) {
+                    // Actualizar la asistencia existente
+                    $asistenciaExistente->update([
+                        'asistio' => $estaPresente,
+                        'observaciones' => $request->input('observaciones'),
+                    ]);
+                } else {
+                    // Crear una nueva asistencia
+                    Asistencia::create([
+                        'cursos_id' => $curso->id,
+                        'alumnos_id' => $alumnoId,
+                        'fecha_asistencia' => $fechaAsistencia,
+                        'asistio' => $estaPresente,
+                        'observaciones' => $request->input('observaciones'),
+                    ]);
+                }
             }
             DB::commit();
             $asignaturas = Asignatura::all();
@@ -216,6 +235,7 @@ class CursoController extends Controller
             return redirect()->back()->with('error', 'Error al registrar las asistencias: ' . $e->getMessage());
         }
     }
+
 
     public function nuevaEvaluacion(Request $request, $cursoId)
     {
@@ -302,6 +322,62 @@ class CursoController extends Controller
             return redirect()->back()->with('error', 'Error al registrar las calificaciones: ' . $e->getMessage());
         }
     }
+
+    public function mostrarAsistencias($cursoId)
+    {
+        $curso = Curso::find($cursoId);
+        $alumnos = $curso->alumnos;
+        $asignaturas = Asignatura::all();
+
+        // Obtener fechas de asistencia, excluyendo aquellas con valor null
+        $fechasAsistencia = Asistencia::where('cursos_id', $cursoId)
+            ->whereNotNull('fecha_asistencia')
+            ->pluck('fecha_asistencia')
+            ->unique();
+
+        // Fecha con formato dd/mm/yyyy para títulos de las columnas
+        $fechasCabeceras = Asistencia::where('cursos_id', $cursoId)
+            ->whereNotNull('fecha_asistencia')
+            ->pluck('fecha_asistencia')
+            ->unique()
+            ->map(function ($fecha) {
+                // Formatear la fecha como "dd/mm/yyyy HH:mm"
+                return Carbon::parse($fecha)->format('d/m/Y H:i');
+            });
+
+        // Crear un array para almacenar el estado de asistencia por alumno y fecha
+        $asistenciasData = [];
+
+        foreach ($alumnos as $alumno) {
+            $asistenciaAlumno = [];
+
+            foreach ($fechasAsistencia as $fecha) {
+                // Verificar si existe una asistencia para esta fecha y este alumno
+                $asistencia = Asistencia::where('cursos_id', $cursoId)
+                    ->where('alumnos_id', $alumno->id)
+                    ->where('fecha_asistencia', $fecha)
+                    ->first();
+
+                // Obtener el estado de asistencia
+                $estadoAsistencia = $asistencia ? ($asistencia->asistio ? 'Presente' : 'Ausente') : 'Sin registro';
+
+                $asistenciaAlumno[$fecha] = $estadoAsistencia;
+            }
+
+            $asistenciasData[$alumno->nombre] = $asistenciaAlumno;
+        }
+
+        return response()->json([
+            'asignaturas' => $asignaturas,
+            'alumnos' => $alumnos,
+            'curso' => $curso,
+            'fechasAsistencia' => $fechasAsistencia,
+            'asistenciasData' => $asistenciasData,
+            'fechasCabeceras' => $fechasCabeceras,
+        ]);
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

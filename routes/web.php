@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/guardar-asistencia/{cursoId}', [CursoController::class, 'guardarAsistencia'])->name('cursos.guardar-asistencia');
     Route::post('/calificar/{cursoId}', [CursoController::class, 'calificar'])->name('cursos.calificar');
     Route::post('/nueva-evaluacion/{cursoId}', [CursoController::class, 'nuevaEvaluacion'])->name('cursos.nueva-evaluacion');
+    Route::get('/mostrar-asistencias/{cursoId}', [CursoController::class, 'mostrarAsistencias'])->name('cursos.mostrar-asistencias');
 
     Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index');
     Route::post('/calendario/fetch-events', [CalendarioController::class, 'fetchEvents'])->name('calendario.fetchEvents');

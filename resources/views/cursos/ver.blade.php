@@ -13,17 +13,30 @@
                                 <h6 class="text-white mx-3"><strong> Administrar curso</strong></h6>
                             </div>
                         </div>
-                        <div class="me-3 my-3 text-end">
-                            <a id="nuevaEvaluacionBtn{{ $curso->id }}" class="btn bg-gradient-success mb-0"
-                                data-toggle="modal" data-target="#nuevaEvaluacion{{ $curso->id }}">
-                                <i class="material-icons text-sm">add</i>&nbsp;Nueva evaluación
-                            </a>
-                            <a class="btn bg-gradient-danger mb-0"
-                                href="{{ route('cursos.nueva-calificacion', $curso->id) }}"><i
-                                    class="material-icons text-sm">calculate</i>&nbsp;Calificar</a>
-                            <a class="btn bg-gradient-info mb-0"
-                                href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;Tomar asistencia</a>
+                        <div>
+                            <div class="ms-3 my-3 text-start">
+                                <a id="#" class="btn bg-gradient-success mb-0" data-toggle="modal"
+                                    data-target="#nuevaEvaluacion{{ $curso->id }}">
+                                    <i class="material-icons text-sm">visibility</i>&nbsp;Notas
+                                </a>
+                                <!-- Botón para abrir modal asistencias -->
+                                <a id="mostrarAsistenciasBtn{{ $curso->id }}" class="btn bg-gradient-info mb-0"
+                                    data-toggle="modal" data-target="#modalAsistencias{{ $curso->id }}">
+                                    <i class="material-icons text-sm">calculate</i>&nbsp;Asistencias
+                                </a>
+                            </div>
+                            <div class="me-3 my-3 text-end">
+                                <a id="nuevaEvaluacionBtn{{ $curso->id }}" class="btn bg-gradient-success mb-0"
+                                    data-toggle="modal" data-target="#nuevaEvaluacion{{ $curso->id }}">
+                                    <i class="material-icons text-sm">add</i>&nbsp;Nueva evaluación
+                                </a>
+                                <a class="btn bg-gradient-danger mb-0"
+                                    href="{{ route('cursos.nueva-calificacion', $curso->id) }}"><i
+                                        class="material-icons text-sm">calculate</i>&nbsp;Calificar</a>
+                                <a class="btn bg-gradient-info mb-0"
+                                    href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
+                                        class="material-icons text-sm">add</i>&nbsp;Tomar asistencia</a>
+                            </div>
                         </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
@@ -147,8 +160,8 @@
                 </div>
             </div>
             <!-- Modal para notas -->
-            <div id="modal-notas" class="modal fade" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);"
-                role="dialog" aria-hidden="true">
+            <div id="modal-notas" class="modal fade" data-backdrop="false"
+                style="background-color: rgba(0, 0, 0, 0.5);" role="dialog" aria-hidden="true">
                 <div id="dialog" class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <!-- Contenido del modal -->
@@ -213,6 +226,23 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal de todas las asistencias -->
+            <div id="modalAsistencias" class="modal fade" data-backdrop="false"
+                style="background-color: rgba(0, 0, 0, 0.5);" role="dialog" aria-hidden="true">
+                <div id="dialog" class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Asistencias</h5>
+                        </div>
+                        <div class="modal-body" id="modalContentAsistencia">
+                            <!-- El contenido de la tabla se mostrará aquí -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Script AJAX para cargar las notas -->
             <script>
@@ -222,6 +252,7 @@
                     var $modalNotas = $('#modal-notas');
                     var $modalAsistencias = $('#modal-asistencias');
                     var $modalNuevaEvaluacion = $('#modal-nueva-evaluacion');
+                    var $modalTodasAsistencias = $('#modalAsistencias');
 
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalNotas.find('.btn-danger').on('click', function() {
@@ -230,6 +261,9 @@
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalAsistencias.find('.btn-danger').on('click', function() {
                         $modalAsistencias.modal('hide');
+                    });
+                    $modalTodasAsistencias.find('.btn-danger').on('click', function() {
+                        $modalTodasAsistencias.modal('hide');
                     });
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalNuevaEvaluacion.find('#cerrarModalNuevaEvaluacion').on('click', function() {
@@ -260,6 +294,102 @@
                     handleClickEvent('#nuevaEvaluacionBtn{{ $curso->id }}', function() {
                         $('#modal-nueva-evaluacion').modal('show');
                     });
+                    handleClickEvent('#mostrarAsistenciasBtn{{ $curso->id }}', function() {
+                        mostrarAsistencias({{ $curso->id }})
+                    });
+
+                    function mostrarAsistencias(cursoId) {
+                        $.ajax({
+                            url: '/mostrar-asistencias/' + cursoId,
+                            method: 'GET',
+                            dataType: 'json', // Indicar que esperas un JSON como respuesta
+                            success: function(data) {
+                                console.log('data', data);
+                                $('#modalAsistencias').modal('show');
+                                actualizarTablaAsistencias(data);
+                            },
+                            error: function(error) {
+                                console.error(error);
+                            }
+                        });
+                    }
+
+                    function actualizarTablaAsistencias(data) {
+                        // Limpiar contenido actual de la tabla
+                        $('#modalContentAsistencia').empty();
+
+                        // Construir la tabla con los datos recibidos
+                        var tableHtml =
+                            '<div class="table-responsive"><table class="table table-condensed table-bordered table-stripped"><thead><tr><th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Alumno</th>';
+                        $.each(data.fechasCabeceras, function(index, fecha) {
+                            tableHtml +=
+                                '<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">' +
+                                fecha + '</th>';
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        $.each(data.alumnos, function(index, alumno) {
+                            tableHtml += '<tr><td class="text-xs font-weight-bolder">' + alumno.apellido + ' ' +
+                                alumno.nombre + '</td>';
+                            $.each(data.fechasAsistencia, function(index, fecha) {
+                                tableHtml +=
+                                    '<td class="text-uppercase text-secondary text-xxs font-weight-bolder">';
+                                // Mostrar si el alumno está presente o ausente
+                                tableHtml += data.asistenciasData[alumno.nombre][fecha];
+                                tableHtml += '</td>';
+                            });
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table></div>'; // Agregar la clase 'table-responsive' al contenedor
+
+                        // Agregar la tabla al contenido de la modal
+                        $('#modalContentAsistencia').html(tableHtml);
+                    }
+
+                    /*//Con datatables
+                    function actualizarTablaAsistencias(data) {
+                        // Limpiar contenido actual de la tabla
+                        $('#modalContentAsistencia').empty();
+
+                        // Construir la tabla con los datos recibidos
+                        var tableHtml =
+                            '<table id="tablaTodasAsistencias" class="table table-bordered table-stripped"><thead><tr><th>Alumno</th>';
+                        $.each(data.fechasCabeceras, function(index, fecha) {
+                            tableHtml +=
+                                '<th>' +
+                                fecha + '</th>';
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+                        $.each(data.alumnos, function(index, alumno) {
+                            tableHtml += '<tr><td>' + alumno
+                                .apellido + ' ' +
+                                alumno.nombre + '</td>';
+                            $.each(data.fechasAsistencia, function(index, fecha) {
+                                tableHtml +=
+                                    '<td>';
+                                // Mostrar si el alumno está presente o ausente
+                                tableHtml += data.asistenciasData[alumno.nombre][fecha];
+                                tableHtml += '</td>';
+                            });
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table>'; // Agregar la clase 'table-responsive' al contenedor
+
+                        // Agregar la tabla al contenido de la modal
+                        $('#modalContentAsistencia').html(tableHtml);
+
+                        // Destruir la instancia anterior de DataTables si existe
+                        if ($.fn.DataTable.isDataTable('#tablaTodasAsistencias')) {
+                            $('#tablaTodasAsistencias').DataTable().destroy();
+                        }
+
+                        // Inicializar DataTables para permitir el desplazamiento horizontal
+                        $('#tablaTodasAsistencias').DataTable({
+                            scrollX: true,
+                            fixedColumns: {
+                                leftColumns: 1 // Fijar la columna "Alumno"
+                            }
+                        });
+                    }*/
 
                     function nuevaEvaluacion(cursoId) {
                         console.log('idCurso', cursoId);
