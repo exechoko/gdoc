@@ -13,16 +13,17 @@
                                 <h6 class="text-white mx-3"><strong> Administrar curso</strong></h6>
                             </div>
                         </div>
-                        <div>
+                        <div class="d-flex justify-content-between align-items-center">
                             <div class="ms-3 my-3 text-start">
-                                <a id="#" class="btn bg-gradient-success mb-0" data-toggle="modal"
-                                    data-target="#nuevaEvaluacion{{ $curso->id }}">
-                                    <i class="material-icons text-sm">visibility</i>&nbsp;Notas
+                                <!-- Botón para abrir modal todas las notas -->
+                                <a id="mostrarNotasBtn{{ $curso->id }}" class="btn bg-gradient-success mb-0"
+                                    data-toggle="modal" data-target="#modalTodasNotas{{ $curso->id }}">
+                                    <i class="material-icons text-sm">calculate</i>&nbsp;Notas
                                 </a>
                                 <!-- Botón para abrir modal asistencias -->
                                 <a id="mostrarAsistenciasBtn{{ $curso->id }}" class="btn bg-gradient-info mb-0"
                                     data-toggle="modal" data-target="#modalAsistencias{{ $curso->id }}">
-                                    <i class="material-icons text-sm">calculate</i>&nbsp;Asistencias
+                                    <i class="material-icons text-sm">calendar_month</i>&nbsp;Asistencias
                                 </a>
                             </div>
                             <div class="me-3 my-3 text-end">
@@ -31,13 +32,16 @@
                                     <i class="material-icons text-sm">add</i>&nbsp;Nueva evaluación
                                 </a>
                                 <a class="btn bg-gradient-danger mb-0"
-                                    href="{{ route('cursos.nueva-calificacion', $curso->id) }}"><i
-                                        class="material-icons text-sm">calculate</i>&nbsp;Calificar</a>
+                                    href="{{ route('cursos.nueva-calificacion', $curso->id) }}">
+                                    <i class="material-icons text-sm">calculate</i>&nbsp;Calificar
+                                </a>
                                 <a class="btn bg-gradient-info mb-0"
-                                    href="{{ route('cursos.nueva-asistencia', $curso->id) }}"><i
-                                        class="material-icons text-sm">add</i>&nbsp;Tomar asistencia</a>
+                                    href="{{ route('cursos.nueva-asistencia', $curso->id) }}">
+                                    <i class="material-icons text-sm">add</i>&nbsp;Tomar asistencia
+                                </a>
                             </div>
                         </div>
+
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -243,6 +247,23 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal de todas las notas -->
+            <div id="modalTodasNotas" class="modal fade" data-backdrop="false"
+                style="background-color: rgba(0, 0, 0, 0.5);" role="dialog" aria-hidden="true">
+                <div id="dialog" class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Notas</h5>
+                        </div>
+                        <div class="modal-body" id="modalContentNotas">
+                            <!-- El contenido de la tabla se mostrará aquí -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Script AJAX para cargar las notas -->
             <script>
@@ -253,6 +274,7 @@
                     var $modalAsistencias = $('#modal-asistencias');
                     var $modalNuevaEvaluacion = $('#modal-nueva-evaluacion');
                     var $modalTodasAsistencias = $('#modalAsistencias');
+                    var $modalTodasNotas = $('#modalTodasNotas');
 
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalNotas.find('.btn-danger').on('click', function() {
@@ -264,6 +286,9 @@
                     });
                     $modalTodasAsistencias.find('.btn-danger').on('click', function() {
                         $modalTodasAsistencias.modal('hide');
+                    });
+                    $modalTodasNotas.find('.btn-danger').on('click', function() {
+                        $modalTodasNotas.modal('hide');
                     });
                     // Asignar manejador de eventos para el botón "Cerrar"
                     $modalNuevaEvaluacion.find('#cerrarModalNuevaEvaluacion').on('click', function() {
@@ -297,6 +322,9 @@
                     handleClickEvent('#mostrarAsistenciasBtn{{ $curso->id }}', function() {
                         mostrarAsistencias({{ $curso->id }})
                     });
+                    handleClickEvent('#mostrarNotasBtn{{ $curso->id }}', function() {
+                        mostrarTodasLasNotas({{ $curso->id }})
+                    });
 
                     function mostrarAsistencias(cursoId) {
                         $.ajax({
@@ -313,6 +341,61 @@
                             }
                         });
                     }
+
+                    function mostrarTodasLasNotas(cursoId) {
+                        $.ajax({
+                            url: '/mostrar-todas-notas/' + cursoId,
+                            method: 'GET',
+                            dataType: 'json', // Indicar que esperas un JSON como respuesta
+                            success: function(data) {
+                                console.log('data', data);
+                                $('#modalTodasNotas').modal('show');
+                                actualizarTablaNotas(data);
+                            },
+                            error: function(error) {
+                                console.error(error);
+                            }
+                        });
+                    }
+
+                    function actualizarTablaNotas(data) {
+                        // Limpiar contenido actual de la tabla
+                        $('#modalContentNotas').empty();
+
+                        // Construir la tabla con los datos recibidos
+                        var tableHtml =
+                            '<div class="table-responsive"><table class="table table-condensed table-bordered table-stripped"><thead><tr><th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Alumno</th>';
+
+                        // Cabeceras para las evaluaciones
+                        $.each(data.fechasCabeceras, function(index, evaluacion) {
+                            tableHtml +=
+                                '<th class="text-uppercase text-secondary text-xxs font-weight-bolder">' +
+                                evaluacion + '</th>';
+                        });
+
+                        tableHtml += '</tr></thead><tbody>';
+                        $.each(data.alumnos, function(index, alumno) {
+                            tableHtml += '<tr><td class="text-xs font-weight-bolder">' + alumno.apellido + ' ' +
+                                alumno.nombre + '</td>';
+
+                            // Celdas para las calificaciones
+                            $.each(data.evaluaciones, function(index, evaluacion) {
+                                tableHtml +=
+                                    '<td class="text-uppercase text-secondary text-xxs font-weight-bolder">';
+                                // Mostrar la calificación del alumno en la evaluación
+                                tableHtml += data.calificacionesData[alumno.id][evaluacion
+                                .fecha_evaluacion];
+                                tableHtml += '</td>';
+                            });
+
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</tbody></table></div>'; // Agregar la clase 'table-responsive' al contenedor
+
+                        // Agregar la tabla al contenido de la modal
+                        $('#modalContentNotas').html(tableHtml);
+                    }
+
 
                     function actualizarTablaAsistencias(data) {
                         // Limpiar contenido actual de la tabla

@@ -377,7 +377,50 @@ class CursoController extends Controller
         ]);
     }
 
+    public function mostrarTodasNotas($cursoId)
+    {
+        $curso = Curso::find($cursoId);
+        $alumnos = $curso->alumnos;
+        $asignaturas = Asignatura::all();
 
+        $evaluaciones = Evaluacion::where('cursos_id', $cursoId)->get();
+
+        // Crear un array para almacenar las calificaciones por alumno y evaluación
+        $calificacionesData = [];
+
+        foreach ($alumnos as $alumno) {
+            $calificacionesAlumno = [];
+
+            foreach ($evaluaciones as $evaluacion) {
+                // Obtener la calificación para esta evaluación y este alumno
+                $calificacion = Calificacion::where('alumnos_id', $alumno->id)
+                    ->where('evaluacion_id', $evaluacion->id)
+                    ->first();
+
+                // Obtener el valor de la calificación o indicar "Sin calificación"
+                $valorCalificacion = $calificacion ? $calificacion->nota : 'Sin calificación';
+
+                $calificacionesAlumno[$evaluacion->fecha_evaluacion] = $valorCalificacion;
+            }
+
+            $calificacionesData[$alumno->id] = $calificacionesAlumno;
+        }
+
+        // Obtener fechas y temas de las evaluaciones
+        $fechasCabeceras = $evaluaciones->map(function ($evaluacion) {
+            // Formatear la fecha y el tema como "dd/mm/yyyy - Tema"
+            return Carbon::parse($evaluacion->fecha_evaluacion)->format('d/m/Y') . ' - ' . $evaluacion->observaciones;
+        });
+
+        return response()->json([
+            'asignaturas' => $asignaturas,
+            'alumnos' => $alumnos,
+            'curso' => $curso,
+            'evaluaciones' => $evaluaciones,
+            'calificacionesData' => $calificacionesData,
+            'fechasCabeceras' => $fechasCabeceras,
+        ]);
+    }
 
     /**
      * Remove the specified resource from storage.

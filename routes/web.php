@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/calificar/{cursoId}', [CursoController::class, 'calificar'])->name('cursos.calificar');
     Route::post('/nueva-evaluacion/{cursoId}', [CursoController::class, 'nuevaEvaluacion'])->name('cursos.nueva-evaluacion');
     Route::get('/mostrar-asistencias/{cursoId}', [CursoController::class, 'mostrarAsistencias'])->name('cursos.mostrar-asistencias');
+    Route::get('/mostrar-todas-notas/{cursoId}', [CursoController::class, 'mostrarTodasNotas'])->name('cursos.mostrar-todas-notas');
 
     Route::get('/calendario', [CalendarioController::class, 'index'])->name('calendario.index');
     Route::post('/calendario/fetch-events', [CalendarioController::class, 'fetchEvents'])->name('calendario.fetchEvents');
