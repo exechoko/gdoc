@@ -12,6 +12,7 @@ class Alumno extends Model
     use HasFactory;
     protected $table = 'alumnos';
     protected $fillable = [
+        'user_id',
         'cursos_id',
         'escuelas_id',
         'nombre',
@@ -35,6 +36,10 @@ class Alumno extends Model
     public function curso()
     {
         return $this->belongsTo(Curso::class, 'cursos_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function calificaciones()

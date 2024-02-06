@@ -62,4 +62,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Horario::class);
     }
+    public function alumnos(){
+        return $this->hasMany(Alumno::class);
+    }
 }

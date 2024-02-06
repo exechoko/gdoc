@@ -75,6 +75,7 @@ class AlumnoController extends Controller
             DB::beginTransaction();
             // Crea el alumno y guarda directamente
             Alumno::create([
+                'user_id' => auth()->id(),
                 'apellido' => $request->input('apellido'),
                 'nombre' => $request->input('nombre'),
                 'dni' => $request->input('dni'),
@@ -141,6 +142,7 @@ class AlumnoController extends Controller
 
             // Actualiza los campos
             $alumno->update([
+                'user_id' => auth()->id(),
                 'apellido' => $request->input('apellido'),
                 'nombre' => $request->input('nombre'),
                 'dni' => $request->input('dni'),

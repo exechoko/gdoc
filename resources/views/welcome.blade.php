@@ -11,7 +11,7 @@
                 con información relevante.</p>
             <div class="text-center mb-4">
                 <a href="{{ route('login') }}" class="btn btn-primary mx-2">Iniciar Sesión</a>
-                <a href="#" class="btn btn-success mx-2">Registrarse</a>
+                <a href="{{ route('register') }}" class="btn btn-success mx-2">Registrarse</a>
             </div>
         </div>
     </div>

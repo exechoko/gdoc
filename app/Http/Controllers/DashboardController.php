@@ -25,8 +25,8 @@ class DashboardController extends Controller
         } elseif ($user->hasRole('Docente')) {
             // Verifica si el usuario tiene el rol de "docente"
             // Obtén la cantidad de cursos del usuario
-            $cantidadCursos = $user->cursos()->count();
-            $cantidadAlumnos = $user->alumnos()->count();
+            $cantidadCursos = $user->cursos->count();
+            $cantidadAlumnos = $user->alumnos->count();
         }
 
         return view('dashboard.index', compact('cantidadCursos', 'cantidadAlumnos'));
