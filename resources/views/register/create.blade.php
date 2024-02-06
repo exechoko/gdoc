@@ -28,7 +28,9 @@
                                         <div class="alert alert-secondary">
                                             <ul>
                                                 @foreach ($errors->all() as $error)
-                                                    <li><p class='text-white'>{{ $error }}</p></li>
+                                                    <li>
+                                                        <p class='text-white'>{{ $error }}</p>
+                                                    </li>
                                                 @endforeach
                                             </ul>
                                         </div>
@@ -50,6 +52,14 @@
                                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                             @enderror
                                             <div class="input-group input-group-outline mt-3">
+                                                <label class="form-label">Teléfono (sin 0 ni 15)</label>
+                                                <input type="number" class="form-control" name="phone"
+                                                    value="{{ old('phone') }}">
+                                            </div>
+                                            @error('name')
+                                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                            @enderror
+                                            <div class="input-group input-group-outline mt-3">
                                                 <label class="form-label">Email</label>
                                                 <input type="email" class="form-control" name="email"
                                                     value="{{ old('email') }}">
@@ -65,9 +75,9 @@
                                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                             @enderror
                                             <div class="form-check form-check-info text-start ps-0 mt-3">
-                                                <input class="form-check-input" type="checkbox"
-                                                    id="flexCheckDefault" name="terminos">
-                                                <label class="form-check-label" for="flexCheckDefault">
+                                                <input class="form-check-input" type="checkbox" id="terminos"
+                                                    name="terminos">
+                                                <label class="form-check-label" for="terminos">
                                                     Estoy de acuerdo con <a href="javascript:;"
                                                         class="text-dark font-weight-bolder">Términos y Condiciones</a>
                                                 </label>
@@ -96,15 +106,31 @@
 
     @push('js')
         <script src="{{ asset('assets') }}/js/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            $(function() {
-
-                var text_val = $(".input-group input").val();
-                if (text_val === "") {
-                    $(".input-group").removeClass('is-filled');
-                } else {
-                    $(".input-group").addClass('is-filled');
-                }
+            $(document).ready(function() {
+                // Espera a que el documento esté completamente cargado
+                // Agrega un evento de escucha al formulario cuando se envía
+                $('form').submit(function(event) {
+                    // Evita que el formulario se envíe automáticamente
+                    event.preventDefault();
+                    // Verifica si el checkbox está marcado
+                    var isChecked = $('#terminos').prop('checked');
+                    // Si el checkbox está marcado, puedes realizar acciones aquí
+                    if (isChecked) {
+                        // Por ejemplo, aquí podrías enviar el formulario
+                        $(this).unbind('submit').submit();
+                    } else {
+                        // Si el checkbox no está marcado, muestra un mensaje de error o realiza otra acción
+                        //swal2('Debes aceptar los términos y condiciones.', 'warning');
+                        Swal.fire({
+                            title: 'Atención',
+                            text: 'Debes aceptar los términos y condiciones para continuar.',
+                            icon: 'warning',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                });
             });
         </script>
     @endpush
