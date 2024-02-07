@@ -7,6 +7,7 @@ use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CalificacionController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EscuelaController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
@@ -59,7 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('asistencias', AsistenciaController::class);
     Route::resource('calificaciones', CalificacionController::class);
     Route::resource('asignaturas', AsignaturaController::class);
-    //Route::resource('horarios', HorarioController::class);
+    Route::resource('escuelas', EscuelaController::class);
 
     Route::get('/obtener-notas/{alumnoId}', [CursoController::class, 'obtenerNotas'])->name('obtener-notas');
     Route::get('/obtener-calificaciones/{evaluacionId}', [CursoController::class, 'obtenerCalificaciones'])->name('obtener-calificaciones');
@@ -78,6 +79,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
     Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
     Route::post('/horarios/store', [HorarioController::class, 'store'])->name('horarios.store');
+
+
 
     Route::get('billing', function () {
         return view('pages.billing');

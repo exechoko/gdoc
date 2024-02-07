@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Escuela;
 use Illuminate\Http\Request;
 
 class EscuelaController extends Controller
@@ -11,7 +12,8 @@ class EscuelaController extends Controller
      */
     public function index()
     {
-        //
+        $escuelas = Escuela::all();
+        return view('escuelas.index', compact('escuelas'));
     }
 
     /**
