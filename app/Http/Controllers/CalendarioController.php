@@ -41,7 +41,7 @@ class CalendarioController extends Controller
             $cursos = Curso::with('escuela')->get();
         } else {
             // Verifica si el usuario tiene el rol de "docente"
-            if ($user->hasRole('Docente')) {
+            if ($user->hasRole('Docente') || $user->hasRole('Docente Premium') || $user->hasRole('Docente Pro')) {
                 // Obtén los cursos del usuario con relaciones cargadas
                 $cursos = $user->cursos()->with('escuela')->get();
             }

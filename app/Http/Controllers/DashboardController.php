@@ -22,7 +22,7 @@ class DashboardController extends Controller
             // Si tiene el rol de "Super Admin" o "Admin", obtén la cantidad de todos los cursos
             $cantidadCursos = Curso::count();
             $cantidadAlumnos = Alumno::count();
-        } elseif ($user->hasRole('Docente')) {
+        } elseif ($user->hasRole('Docente') || $user->hasRole('Docente Premium') || $user->hasRole('Docente Pro')) {
             // Verifica si el usuario tiene el rol de "docente"
             // Obtén la cantidad de cursos del usuario
             $cantidadCursos = $user->cursos->count();

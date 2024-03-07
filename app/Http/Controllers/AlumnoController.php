@@ -30,7 +30,7 @@ class AlumnoController extends Controller
             //dd($alumnos);
         } else {
             // Verifica si el usuario tiene el rol de "docente"
-            if ($user->hasRole('Docente')) {
+            if ($user->hasRole('Docente') || $user->hasRole('Docente Premium') || $user->hasRole('Docente Pro')) {
                 // Obtén los cursos del usuario con relaciones cargadas
                 $cursosUsuario = $user->cursos()->get();
 

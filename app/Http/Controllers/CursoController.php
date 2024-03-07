@@ -33,7 +33,7 @@ class CursoController extends Controller
             $cursos = Curso::with('escuela')->get();
         } else {
             // Verifica si el usuario tiene el rol de "docente"
-            if ($user->hasRole('Docente')) {
+            if ($user->hasRole('Docente') || $user->hasRole('Docente Premium') || $user->hasRole('Docente Pro')) {
                 // Obtén los cursos del usuario con relaciones cargadas
                 $cursos = $user->cursos()->with('escuela')->get();
             }
@@ -58,6 +58,13 @@ class CursoController extends Controller
      */
     public function store(Request $request)
     {
+        // Primero, verificamos si el usuario tiene permiso para crear otro curso
+        $canCreate = $this->authorize('create', Curso::class);
+        //dd('aca');
+        if (!$canCreate) {
+            return redirect()->back()->with('error', 'No tienes permiso para crear otro curso.');
+        }
+
         //dd($request->all());
         try {
             $request->validate([
